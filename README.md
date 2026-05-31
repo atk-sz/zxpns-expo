@@ -16,3 +16,6 @@ S5: to build
 eas build
 eas build --platform android --profile development
 eas build --platform ios --profile development
+
+**********\*\*\***********INFORMATIONS********\*********
+I1: agent skills help in creating & maintaining code using ai
