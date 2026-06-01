@@ -1,4 +1,5 @@
 import LoadingComponent from "@/components/loader/loading.component";
+import { theme } from "@/constants/theme";
 import { LoaderProvider } from "@/contexts/loader.context";
 import { ToastProvider } from "@/contexts/toast.context";
 import { Stack } from "expo-router";
@@ -15,6 +16,7 @@ export default function RootLayout() {
             <Stack
               screenOptions={{
                 headerShown: false,
+                contentStyle: { backgroundColor: theme.primary },
               }}
             />
           </PersistGate>

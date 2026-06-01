@@ -152,18 +152,25 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
   };
 
   const handleCancelPress = () => {
-    showModal({
-      title: "Cancel",
-      message: "Are you sure you want to cancel? All changes will be lost.",
-      confirmText: "Yes, Cancel",
-      cancelText: "No, Keep Editing",
-      iconName: "alert-circle",
-      iconColor: theme.warning,
-      confirmButtonColor: theme.warning,
-      onConfirm: () => {
-        router.back();
-      },
-    });
+    const updatedFormValues = { ...formValues, title: formValues.title.trim() };
+    if (
+      updatedFormValues.title ||
+      updatedFormValues.startDate ||
+      updatedFormValues.endDate
+    ) {
+      showModal({
+        title: "Cancel",
+        message: "Are you sure you want to cancel? All changes will be lost.",
+        confirmText: "Yes, Cancel",
+        cancelText: "No, Keep Editing",
+        iconName: "alert-circle",
+        iconColor: theme.warning,
+        confirmButtonColor: theme.warning,
+        onConfirm: () => {
+          router.back();
+        },
+      });
+    } else router.back();
   };
 
   // Load event data for edit mode
