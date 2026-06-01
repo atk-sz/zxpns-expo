@@ -1,6 +1,7 @@
 import useConfirmationModal from "@/hooks/useConfirmationModel";
 import { useTheme } from "@/hooks/useTheme";
 import Icon from "@expo/vector-icons/MaterialIcons";
+import { router } from "expo-router";
 import React from "react";
 import {
   FlatList,
@@ -78,7 +79,7 @@ const ExpenseEventsList: React.FC<IExpenseEventsListProps> = ({ expenses }) => {
   );
 
   const onPressCreateEvent = () => {
-    // navigation.navigate("CreateEvent");
+    router.navigate("/CreateEvent");
   };
 
   return (
