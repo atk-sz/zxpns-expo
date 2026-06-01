@@ -5,6 +5,7 @@ import ScreenView from "@/components/generic/ScreenView";
 import { useLoader } from "@/contexts/loader.context";
 import { useTheme } from "@/hooks/useTheme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 
 const DevScreen: React.FC = (): React.JSX.Element => {
   const styles = useStyles();
@@ -47,16 +48,12 @@ const DevScreen: React.FC = (): React.JSX.Element => {
   };
 
   const goToHome = (): void => {
-    navigation.navigate("Home");
+    router.push("/Home");
   };
 
-  const goToLogin = (): void => {
-    navigation.navigate("Login");
-  };
+  const goToLogin = (): void => {};
 
-  const goToProfile = (): void => {
-    navigation.navigate("Profile");
-  };
+  const goToProfile = (): void => {};
 
   return (
     <ScreenView>
