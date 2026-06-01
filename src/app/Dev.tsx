@@ -2,12 +2,13 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 // import { useLoader } from '../contexts/loader.context';
 import ScreenView from "@/components/generic/ScreenView";
+import { useLoader } from "@/contexts/loader.context";
 import { useTheme } from "@/hooks/useTheme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DevScreen: React.FC = (): React.JSX.Element => {
   const styles = useStyles();
-  //   const { showLoader, hideLoader } = useLoader();
+  const { showLoader, hideLoader } = useLoader();
 
   // to acces data from async storage
   // const loadUser = async () => {
@@ -29,9 +30,9 @@ const DevScreen: React.FC = (): React.JSX.Element => {
   // };
 
   const showLoaderFn = (): void => {
-    // showLoader('Brrr...');
+    showLoader("Brrr...");
     setTimeout(() => {
-      //   hideLoader();
+      hideLoader();
     }, 3000);
   };
 
