@@ -19,7 +19,7 @@ export const getTypeColor = (type: ITransactionType) => {
     case "outgoing":
       return Colors.dark.error;
     case "item":
-      return Colors.dark.orange;
+      return Colors.dark.warning;
     default:
       return Colors.dark.text;
   }

@@ -1,9 +1,12 @@
 import ExpenseEventForm from "@/components/forms/expense-event-form.component";
 import ScreenView from "@/components/generic/ScreenView";
+import ConfirmationModal from "@/components/model/confirmationModel.component";
+import useConfirmationModal from "@/hooks/useConfirmationModel";
 import { useTheme } from "@/hooks/useTheme";
+import Icon from "@expo/vector-icons/Feather";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "../contexts/toast.context";
 import { saveCurEvent } from "../redux/slices/event";
@@ -13,6 +16,7 @@ import { IExpenseEvent } from "../utils/interfaces";
 
 const CreateEventScreen: React.FC = (): React.JSX.Element => {
   const styles = useStyles();
+  const theme = useTheme();
   // Check if we're in edit mode
   const { isEditMode, eventId } = useLocalSearchParams();
   const dispatch = useDispatch();
@@ -37,6 +41,14 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
     open: true,
   });
   const [eventToEdit, setEventToEdit] = useState<IExpenseEvent | null>(null);
+  const {
+    isVisible,
+    config,
+    animation,
+    showModal,
+    handleConfirm,
+    handleCancel,
+  } = useConfirmationModal();
 
   const handleChange = (key: keyof IExpenseEvent, value: any) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
@@ -57,7 +69,6 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
       pathname: "/EventDetails",
       params: { id: newEvent.id },
     });
-    // navigation.replace('EventDetails', { id: newEvent.id });
   };
 
   const onSubmitUpdate = async (updatedEvent: IExpenseEvent) => {
@@ -142,6 +153,21 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
     }
   };
 
+  const handleCancelPress = () => {
+    showModal({
+      title: "Cancel",
+      message: "Are you sure you want to cancel? All changes will be lost.",
+      confirmText: "Yes, Cancel",
+      cancelText: "No, Keep Editing",
+      iconName: "alert-circle",
+      iconColor: theme.warning,
+      confirmButtonColor: theme.warning,
+      onConfirm: () => {
+        router.back();
+      },
+    });
+  };
+
   // Load event data for edit mode
   useEffect(() => {
     if (isEditMode === "true" && eventId) {
@@ -159,6 +185,19 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
   return (
     <ScreenView>
       <View style={styles.container}>
+        <TouchableOpacity
+          style={[
+            styles.closeFab,
+            {
+              top: 20,
+              left: 20,
+              // backgroundColor: theme.info,
+            },
+          ]}
+          onPress={handleCancelPress}
+        >
+          <Icon name="x" size={30} color={theme.text} />
+        </TouchableOpacity>
         <ExpenseEventForm
           showEndDatePicker={showEndDatePicker}
           showStartDatePicker={showStartDatePicker}
@@ -171,6 +210,13 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
           handleSubmit={handleSubmit}
         />
       </View>
+      <ConfirmationModal
+        isVisible={isVisible}
+        config={config}
+        animation={animation}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </ScreenView>
   );
 };
@@ -193,6 +239,19 @@ const useStyles = () => {
         text: {
           fontSize: 20,
           color: theme.text,
+        },
+        closeFab: {
+          position: "absolute",
+          width: 60,
+          height: 60,
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        label: {
+          color: theme.text,
+          fontSize: 14,
+          marginBottom: 4,
+          fontWeight: "bold",
         },
       }),
     [theme],

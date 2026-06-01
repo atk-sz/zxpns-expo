@@ -17,7 +17,7 @@ import ScreenView from "@/components/generic/ScreenView";
 import TransactionItemComponent from "@/components/list-items/TransactionItem.component";
 import { useTheme } from "@/hooks/useTheme";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "../contexts/toast.context";
@@ -69,14 +69,20 @@ const EventDetailsScreen: React.FC = () => {
 
   const handleTransactionPress = (transaction: IEventTransaction) => {
     dispatch(saveCurTransaction(transaction));
-    // router.navigate('TransactionDetails', {
-    //   transactionId: transaction.id,
-    //   eventId: id,
-    // });
+    router.push({
+      pathname: "/TransactionDetails",
+      params: {
+        transactionId: transaction.id,
+        eventId: id,
+      },
+    });
   };
 
   const handleEventDetailsPress = () => {
-    // router.navigate('EventInfo', { id });
+    router.push({
+      pathname: "/EventInfo",
+      params: { id },
+    });
   };
 
   const renderTransactionItem = ({ item }: { item: IEventTransaction }) => (
