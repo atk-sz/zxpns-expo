@@ -4,11 +4,11 @@ import UserForm from "@/components/forms/user-form.component";
 import ScreenView from "@/components/generic/ScreenView";
 import { IUserState } from "../utils/interfaces";
 // import { useToast } from '../contexts/toast.context';
-// import { useDispatch } from 'react-redux';
-// import { setValue } from '../redux/slices/user';
+import { useDispatch } from "react-redux";
+import { setValue } from "../redux/slices/user";
 
 const PreScreen: React.FC = ({}): React.JSX.Element => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   // const { showToast } = useToast();
   const [formErrors, setFormErrors] = useState<
     Partial<Record<keyof IUserState, string>>
@@ -57,12 +57,12 @@ const PreScreen: React.FC = ({}): React.JSX.Element => {
       return;
     }
 
-    // dispatch(
-    //   setValue({
-    //     firstName: formValues.firstName,
-    //     lastName: formValues.lastName || '',
-    //   }),
-    // );
+    dispatch(
+      setValue({
+        firstName: formValues.firstName,
+        lastName: formValues.lastName || "",
+      }),
+    );
     // navigation.replace('Dev');
   };
 
