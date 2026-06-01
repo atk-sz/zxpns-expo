@@ -5,6 +5,12 @@ export type IUserState = {
   password: string;
 };
 
+export type IToastType = "success" | "error" | "info";
+
+export interface IToastContextType {
+  showToast: (message: string, type?: IToastType) => void;
+}
+
 export interface IExpenseEvent {
   id: string;
   title: string;
