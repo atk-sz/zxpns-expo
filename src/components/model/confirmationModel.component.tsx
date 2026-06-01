@@ -26,9 +26,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onConfirm,
   onCancel,
 }) => {
-  if (!config) return null;
   const theme = useTheme();
   const styles = useStyles();
+  if (!config) return null;
 
   const {
     title,

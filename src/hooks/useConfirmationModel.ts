@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Animated } from 'react-native';
+import { useRef, useState } from "react";
+import { Animated } from "react-native";
 
 export interface ConfirmationModalConfig {
   title: string;
@@ -16,7 +16,7 @@ export interface ConfirmationModalConfig {
 const useConfirmationModal = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [config, setConfig] = useState<ConfirmationModalConfig | null>(null);
-  const [animation] = useState(new Animated.Value(0));
+  const animation = useRef(new Animated.Value(0)).current;
 
   const showModal = (modalConfig: ConfirmationModalConfig) => {
     setConfig(modalConfig);

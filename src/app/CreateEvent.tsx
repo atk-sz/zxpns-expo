@@ -133,7 +133,7 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
       return;
     }
 
-    if (isEditMode) {
+    if (isEditMode === "true" && eventToEdit) {
       onSubmitUpdate(updatedFormValues);
     } else {
       const newId = generateId(updatedFormValues.title, 8);
@@ -144,7 +144,7 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
 
   // Load event data for edit mode
   useEffect(() => {
-    if (isEditMode && eventId) {
+    if (isEditMode === "true" && eventId) {
       const eToEdit = events.find((event) => event.id === eventId);
       if (eToEdit) {
         setEventToEdit(eToEdit);

@@ -59,14 +59,20 @@ const ExpenseEventsList: React.FC<IExpenseEventsListProps> = ({ expenses }) => {
   };
 
   const handleEditEvent = (eventId: string) => {
-    // navigation.navigate("CreateEvent", { isEditMode: true, eventId });
+    router.push({
+      pathname: "/CreateEvent",
+      params: { isEditMode: "true", eventId },
+    });
   };
 
   const onEventPress = (item: IExpenseEvent) => {
     const foundEvent = expenses.find((e) => e.id === item.id);
     if (!foundEvent) return;
     dispatch(saveCurEvent(foundEvent));
-    // navigation.navigate("EventDetails", { id: item.id });
+    router.push({
+      pathname: "/EventDetails",
+      params: { id: item.id },
+    });
   };
 
   const renderExpenseItem = ({ item }: { item: IExpenseEvent }) => (

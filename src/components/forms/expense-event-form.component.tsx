@@ -127,6 +127,7 @@ const ExpenseEventForm: React.FC<IExpenseEventFormProps> = ({
               onNeutralButtonPress={() => setShowEndDatePicker(false)}
             />
           )}
+          <Text style={styles.errorText}>{formErrors.endDate ?? " "}</Text>
         </View>
       )}
 
