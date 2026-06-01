@@ -1,37 +1,19 @@
 import { Platform } from "react-native";
 
-export const Colors = {
-  light: {
-    primary: "#E52E2D", // this is red
-    secondary: "#161616", // this is dark black
-    text: "#ffffff", // this is white
-    dark: "#121212", // this is dark black
-    white: "#ffffff", // this is white
-    grey: "#383838", // this is dark grey
-    info: "#427CC3", // this is light blue
-    error: "#E52E2D", // this is red
-    success: "#4BB543", // this is green
-    warning: "#FFA500",
-    darkGrey: "#2a2a2a",
-    lightGrey: "#888888",
-  },
-  dark: {
-    primary: "#161616", // this is dark black
-    secondary: "#427CC3", // this is light blue
-    text: "#ffffff", // this is white
-    dark: "#121212", // this is dark black
-    white: "#ffffff", // this is white
-    grey: "#383838", // this is dark grey
-    error: "#E52E2D", // this is red
-    info: "#427CC3", // this is light blue
-    success: "#4BB543", // this is green
-    warning: "#FFA500",
-    darkGrey: "#2a2a2a",
-    lightGrey: "#888888",
-  },
-} as const;
-
-export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
+export const theme = {
+  primary: "#161616", // this is dark black
+  secondary: "#427CC3", // this is light blue
+  text: "#ffffff", // this is white
+  dark: "#121212", // this is dark black
+  white: "#ffffff", // this is white
+  grey: "#383838", // this is dark grey
+  error: "#E52E2D", // this is red
+  info: "#427CC3", // this is light blue
+  success: "#4BB543", // this is green
+  warning: "#FFA500",
+  darkGrey: "#2a2a2a",
+  lightGrey: "#888888",
+};
 
 export const Fonts = Platform.select({
   ios: {

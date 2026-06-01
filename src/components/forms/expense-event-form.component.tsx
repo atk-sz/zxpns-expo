@@ -1,4 +1,4 @@
-import { useTheme } from "@/hooks/useTheme";
+import { theme } from "@/constants/theme";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React from "react";
 import {
@@ -34,9 +34,6 @@ const ExpenseEventForm: React.FC<IExpenseEventFormProps> = ({
   handleChange,
   handleSubmit,
 }) => {
-  const theme = useTheme();
-  const styles = useStyles();
-
   return (
     <View style={styles.formContainer}>
       {/* Title */}
@@ -143,58 +140,50 @@ const ExpenseEventForm: React.FC<IExpenseEventFormProps> = ({
 
 export default ExpenseEventForm;
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        formContainer: {
-          flex: 1,
-          width: "100%",
-          marginTop: 100,
-          backgroundColor: theme.primary,
-          padding: 16,
-          borderRadius: 10,
-        },
-        formComponentContainer: {
-          marginBottom: 16,
-        },
-        label: {
-          color: theme.text,
-          fontSize: 14,
-          marginBottom: 4,
-          fontWeight: "bold",
-        },
-        input: {
-          backgroundColor: theme.white,
-          color: theme.dark,
-          padding: 12,
-          borderRadius: 8,
-          marginBottom: 12,
-        },
-        errorText: {
-          color: theme.error,
-          marginBottom: 8,
-          fontSize: 12,
-        },
-        switchContainer: {
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        },
-        submitButton: {
-          backgroundColor: theme.secondary,
-          padding: 14,
-          borderRadius: 8,
-          alignItems: "center",
-        },
-        submitButtonText: {
-          color: theme.text,
-          fontWeight: "bold",
-          fontSize: 16,
-        },
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  formContainer: {
+    flex: 1,
+    width: "100%",
+    marginTop: 100,
+    backgroundColor: theme.primary,
+    padding: 16,
+    borderRadius: 10,
+  },
+  formComponentContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    color: theme.text,
+    fontSize: 14,
+    marginBottom: 4,
+    fontWeight: "bold",
+  },
+  input: {
+    backgroundColor: theme.white,
+    color: theme.dark,
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  errorText: {
+    color: theme.error,
+    marginBottom: 8,
+    fontSize: 12,
+  },
+  switchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  submitButton: {
+    backgroundColor: theme.secondary,
+    padding: 14,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  submitButtonText: {
+    color: theme.text,
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+});

@@ -1,5 +1,5 @@
+import { theme } from "@/constants/theme";
 import useConfirmationModal from "@/hooks/useConfirmationModel";
-import { useTheme } from "@/hooks/useTheme";
 import Icon from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
 import React from "react";
@@ -24,8 +24,6 @@ type IExpenseEventsListProps = {
 };
 
 const ExpenseEventsList: React.FC<IExpenseEventsListProps> = ({ expenses }) => {
-  const theme = useTheme();
-  const styles = useStyles();
   const dispatch = useDispatch();
   const { showToast } = useToast();
   const { showLoader, hideLoader } = useLoader();
@@ -125,48 +123,40 @@ const ExpenseEventsList: React.FC<IExpenseEventsListProps> = ({ expenses }) => {
 
 export default ExpenseEventsList;
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        wrapper: {
-          flex: 1,
-        },
-        listTitle: {
-          fontSize: 18,
-          fontWeight: "bold",
-          color: theme.text,
-          marginBottom: 12,
-          paddingHorizontal: 16,
-        },
-        listContainer: {
-          paddingHorizontal: 16,
-          paddingBottom: 16,
-        },
-        createEventBtn: {
-          backgroundColor: theme.secondary,
-          padding: 16,
-          borderRadius: 10,
-          marginBottom: 12,
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        createEventText: {
-          color: theme.text,
-          fontSize: 16,
-          fontWeight: "bold",
-          marginLeft: 8,
-        },
-        emptyMessage: {
-          textAlign: "center",
-          color: theme.text,
-          fontSize: 16,
-          marginTop: 24,
-        },
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
+  listTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: theme.text,
+    marginBottom: 12,
+    paddingHorizontal: 16,
+  },
+  listContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  createEventBtn: {
+    backgroundColor: theme.secondary,
+    padding: 16,
+    borderRadius: 10,
+    marginBottom: 12,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  createEventText: {
+    color: theme.text,
+    fontSize: 16,
+    fontWeight: "bold",
+    marginLeft: 8,
+  },
+  emptyMessage: {
+    textAlign: "center",
+    color: theme.text,
+    fontSize: 16,
+    marginTop: 24,
+  },
+});

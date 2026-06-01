@@ -1,11 +1,11 @@
-import { useTheme } from "@/hooks/useTheme";
+import { theme } from "@/constants/theme";
 import React, { ReactNode } from "react";
 import {
-    Dimensions,
-    Platform,
-    StatusBar,
-    StyleSheet,
-    View,
+  Dimensions,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  View,
 } from "react-native";
 
 type ScreenViewProps = {
@@ -17,7 +17,6 @@ const ScreenView: React.FC<ScreenViewProps> = ({ children }) => {
     Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) : 0;
   const { width } = Dimensions.get("window");
   const horizontalPadding = width * 0.05;
-  const styles = useStyles();
 
   return (
     <View
@@ -33,20 +32,12 @@ const ScreenView: React.FC<ScreenViewProps> = ({ children }) => {
 
 export default ScreenView;
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flex: 1,
-          backgroundColor: theme.primary,
-        },
-        title: {
-          color: theme.text,
-        },
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.primary,
+  },
+  title: {
+    color: theme.text,
+  },
+});

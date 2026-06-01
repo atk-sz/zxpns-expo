@@ -1,4 +1,4 @@
-import { useTheme } from "@/hooks/useTheme";
+import { theme } from "@/constants/theme";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -31,8 +31,6 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const styles = useStyles();
-  const theme = useTheme();
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [formErrors, setFormErrors] = useState<
     Partial<Record<keyof IEventTransaction, string>>
@@ -452,133 +450,125 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
 
 export default EventTransactionForm;
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        overlay: {
-          flex: 1,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        formContainer: {
-          backgroundColor: theme.primary,
-          borderRadius: 10,
-          padding: 16,
-          width: "90%",
-          maxHeight: "80%",
-        },
-        formTitle: {
-          fontSize: 20,
-          fontWeight: "bold",
-          color: theme.text,
-          textAlign: "center",
-          textTransform: "uppercase",
-          marginBottom: 16,
-        },
-        text: {
-          fontSize: 16,
-          color: theme.text,
-        },
-        formComponentContainer: {
-          marginBottom: 16,
-        },
-        label: {
-          color: theme.text,
-          fontSize: 14,
-          marginBottom: 4,
-          fontWeight: "bold",
-        },
-        input: {
-          backgroundColor: theme.white,
-          color: theme.dark,
-          padding: 12,
-          borderRadius: 8,
-          marginBottom: 4,
-        },
-        textArea: {
-          minHeight: 80,
-          textAlignVertical: "top",
-        },
-        errorText: {
-          color: theme.error,
-          fontSize: 12,
-          marginTop: 2,
-          minHeight: 16,
-        },
-        dateTimeContainer: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          gap: 8,
-        },
-        dateTimeButton: {
-          backgroundColor: theme.white,
-          borderRadius: 8,
-          padding: 12,
-          minHeight: 48,
-          justifyContent: "center",
-        },
-        dateTimeButtonContent: {
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 8,
-        },
-        dateTimeButtonText: {
-          color: theme.dark,
-          fontSize: 14,
-          fontWeight: "500",
-        },
-        typeButtonsContainer: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          gap: 8,
-        },
-        typeButton: {
-          flex: 1,
-          padding: 10,
-          borderRadius: 8,
-          borderWidth: 2,
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: 55,
-        },
-        typeButtonText: {
-          fontSize: 11,
-          marginTop: 4,
-          textAlign: "center",
-        },
-        buttonRow: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          gap: 12,
-        },
-        actionBtn: {
-          flex: 1,
-          padding: 14,
-          borderRadius: 8,
-          alignItems: "center",
-          minHeight: 48,
-          justifyContent: "center",
-        },
-        cancelBtn: {
-          backgroundColor: theme.white,
-        },
-        submitBtn: {
-          backgroundColor: theme.secondary,
-        },
-        cancelText: {
-          color: theme.dark,
-          fontWeight: "600",
-        },
-        submitText: {
-          color: theme.text,
-          fontWeight: "600",
-        },
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  formContainer: {
+    backgroundColor: theme.primary,
+    borderRadius: 10,
+    padding: 16,
+    width: "90%",
+    maxHeight: "80%",
+  },
+  formTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: theme.text,
+    textAlign: "center",
+    textTransform: "uppercase",
+    marginBottom: 16,
+  },
+  text: {
+    fontSize: 16,
+    color: theme.text,
+  },
+  formComponentContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    color: theme.text,
+    fontSize: 14,
+    marginBottom: 4,
+    fontWeight: "bold",
+  },
+  input: {
+    backgroundColor: theme.white,
+    color: theme.dark,
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 4,
+  },
+  textArea: {
+    minHeight: 80,
+    textAlignVertical: "top",
+  },
+  errorText: {
+    color: theme.error,
+    fontSize: 12,
+    marginTop: 2,
+    minHeight: 16,
+  },
+  dateTimeContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  dateTimeButton: {
+    backgroundColor: theme.white,
+    borderRadius: 8,
+    padding: 12,
+    minHeight: 48,
+    justifyContent: "center",
+  },
+  dateTimeButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
+  dateTimeButtonText: {
+    color: theme.dark,
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  typeButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  typeButton: {
+    flex: 1,
+    padding: 10,
+    borderRadius: 8,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 55,
+  },
+  typeButtonText: {
+    fontSize: 11,
+    marginTop: 4,
+    textAlign: "center",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+  },
+  actionBtn: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    minHeight: 48,
+    justifyContent: "center",
+  },
+  cancelBtn: {
+    backgroundColor: theme.white,
+  },
+  submitBtn: {
+    backgroundColor: theme.secondary,
+  },
+  cancelText: {
+    color: theme.dark,
+    fontWeight: "600",
+  },
+  submitText: {
+    color: theme.text,
+    fontWeight: "600",
+  },
+});

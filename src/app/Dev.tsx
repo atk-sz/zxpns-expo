@@ -1,14 +1,12 @@
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-// import { useLoader } from '../contexts/loader.context';
 import ScreenView from "@/components/generic/ScreenView";
+import { theme } from "@/constants/theme";
 import { useLoader } from "@/contexts/loader.context";
-import { useTheme } from "@/hooks/useTheme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const DevScreen: React.FC = (): React.JSX.Element => {
-  const styles = useStyles();
   const { showLoader, hideLoader } = useLoader();
 
   // to acces data from async storage
@@ -40,8 +38,7 @@ const DevScreen: React.FC = (): React.JSX.Element => {
   const removeData = async () => {
     try {
       await AsyncStorage.clear();
-      console.log("AsyncStorage cleared!");
-      //   navigation.replace('PreScreen');
+      router.replace("/PreScreen");
     } catch (e) {
       console.error("Failed to clear storage:", e);
     }
@@ -79,35 +76,27 @@ const DevScreen: React.FC = (): React.JSX.Element => {
   );
 };
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flex: 1,
-          justifyContent: "space-evenly",
-          alignItems: "center",
-        },
-        text: {
-          fontSize: 30,
-          color: theme.text,
-        },
-        container1: {
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-        },
-        btn: {
-          backgroundColor: "#00ff00",
-          margin: 10,
-          paddingHorizontal: 20,
-          paddingVertical: 10,
-        },
-      }),
-    [theme],
-  );
-};
-
 export default DevScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+  text: {
+    fontSize: 30,
+    color: theme.text,
+  },
+  container1: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+  btn: {
+    backgroundColor: "#00ff00",
+    margin: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+});

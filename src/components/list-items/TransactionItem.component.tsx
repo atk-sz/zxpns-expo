@@ -1,4 +1,4 @@
-import { useTheme } from "@/hooks/useTheme";
+import { theme } from "@/constants/theme";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import React from "react";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
@@ -19,7 +19,6 @@ const TransactionItemComponent: React.FC<ITransactionItemProps> = ({
   item,
   onPress,
 }) => {
-  const styles = useStyles();
   const scaleAnim = new Animated.Value(1);
   const opacityAnim = new Animated.Value(1);
 
@@ -127,64 +126,56 @@ const TransactionItemComponent: React.FC<ITransactionItemProps> = ({
 
 export default TransactionItemComponent;
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        transactionItem: {
-          backgroundColor: theme.darkGrey,
-          borderRadius: 12,
-          padding: 16,
-          marginHorizontal: 4,
-          position: "relative",
-        },
-        row1: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 12,
-        },
-        amountText: {
-          fontSize: 18,
-          fontWeight: "bold",
-        },
-        row2: {
-          marginBottom: 12,
-        },
-        itemDetails: {
-          flexDirection: "column",
-        },
-        itemName: {
-          fontSize: 14,
-          color: theme.text,
-          fontWeight: "500",
-          marginBottom: 4,
-        },
-        itemWorth: {
-          fontSize: 14,
-          color: theme.text,
-          fontWeight: "500",
-        },
-        description: {
-          fontSize: 14,
-          color: theme.text,
-          fontStyle: "italic",
-        },
-        row3: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingTop: 8,
-          borderTopWidth: 1,
-          borderTopColor: theme.lightGrey + "30",
-        },
-        dateTime: {
-          fontSize: 12,
-          color: theme.lightGrey,
-        },
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  transactionItem: {
+    backgroundColor: theme.darkGrey,
+    borderRadius: 12,
+    padding: 16,
+    marginHorizontal: 4,
+    position: "relative",
+  },
+  row1: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  amountText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  row2: {
+    marginBottom: 12,
+  },
+  itemDetails: {
+    flexDirection: "column",
+  },
+  itemName: {
+    fontSize: 14,
+    color: theme.text,
+    fontWeight: "500",
+    marginBottom: 4,
+  },
+  itemWorth: {
+    fontSize: 14,
+    color: theme.text,
+    fontWeight: "500",
+  },
+  description: {
+    fontSize: 14,
+    color: theme.text,
+    fontStyle: "italic",
+  },
+  row3: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: theme.lightGrey + "30",
+  },
+  dateTime: {
+    fontSize: 12,
+    color: theme.lightGrey,
+  },
+});

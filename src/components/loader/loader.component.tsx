@@ -1,4 +1,4 @@
-import { useTheme } from "@/hooks/useTheme";
+import { theme } from "@/constants/theme";
 import { router } from "expo-router";
 import React, { useEffect } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 type LoaderComponentProps = {};
 
 const LoaderComponent: React.FC<LoaderComponentProps> = () => {
-  const styles = useStyles();
   // get values directly from Redux (rehydrated by redux-persist)
   const user = useSelector((state: any) => state.user);
   //  const rehydrated = useSelector((state: any) => state._persist?.rehydrated);
@@ -53,24 +52,16 @@ const LoaderComponent: React.FC<LoaderComponentProps> = () => {
 
 export default LoaderComponent;
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: theme.primary,
-        },
-        text: {
-          marginTop: 15,
-          fontSize: 16,
-          color: theme.text,
-        },
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: theme.primary,
+  },
+  text: {
+    marginTop: 15,
+    fontSize: 16,
+    color: theme.text,
+  },
+});

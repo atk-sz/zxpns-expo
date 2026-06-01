@@ -1,11 +1,9 @@
-import { useTheme } from "@/hooks/useTheme";
+import { theme } from "@/constants/theme";
 import React from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { useLoader } from "../../contexts/loader.context";
 
 const LoadingComponent: React.FC = () => {
-  const styles = useStyles();
-  const theme = useTheme();
   const { loading, message } = useLoader();
 
   if (!loading) return null;
@@ -20,24 +18,16 @@ const LoadingComponent: React.FC = () => {
 
 export default LoadingComponent;
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        overlay: {
-          ...StyleSheet.absoluteFill,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          justifyContent: "center",
-          alignItems: "center",
-          zIndex: 9999,
-        },
-        text: {
-          marginTop: 12,
-          color: theme.text,
-        },
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  overlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 9999,
+  },
+  text: {
+    marginTop: 12,
+    color: theme.text,
+  },
+});

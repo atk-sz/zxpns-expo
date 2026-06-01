@@ -1,4 +1,4 @@
-import { useTheme } from "@/hooks/useTheme";
+import { theme } from "@/constants/theme";
 import { IUserState } from "@/utils/interfaces";
 import Icon from "@expo/vector-icons/MaterialIcons";
 import React from "react";
@@ -26,9 +26,6 @@ const UserForm: React.FC<IUserFormProps> = ({
   handleChange,
   onSubmit,
 }) => {
-  const theme = useTheme();
-  const styles = useStyles();
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -74,60 +71,52 @@ const UserForm: React.FC<IUserFormProps> = ({
   );
 };
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        screenContainer: {
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        titleContainer: {
-          marginBottom: 50,
-          flexDirection: "row",
-          alignItems: "center",
-        },
-        titleText: {
-          color: theme.text,
-          fontSize: 30,
-          paddingLeft: 30,
-        },
-        inputContainer: {
-          width: "80%",
-        },
-        inputLabel: {
-          color: theme.text,
-        },
-        input: {
-          color: theme.text,
-          backgroundColor: theme.dark,
-          borderWidth: 2,
-          borderColor: theme.grey,
-          borderRadius: 20,
-          height: 50,
-          padding: 10,
-          marginVertical: 10,
-        },
-        errorText: {
-          color: theme.error,
-          marginBottom: 8,
-          fontSize: 12,
-        },
-        btn: {
-          height: 50,
-          backgroundColor: theme.secondary,
-          width: "80%",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 20,
-          marginTop: 20,
-        },
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  titleContainer: {
+    marginBottom: 50,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  titleText: {
+    color: theme.text,
+    fontSize: 30,
+    paddingLeft: 30,
+  },
+  inputContainer: {
+    width: "80%",
+  },
+  inputLabel: {
+    color: theme.text,
+  },
+  input: {
+    color: theme.text,
+    backgroundColor: theme.dark,
+    borderWidth: 2,
+    borderColor: theme.grey,
+    borderRadius: 20,
+    height: 50,
+    padding: 10,
+    marginVertical: 10,
+  },
+  errorText: {
+    color: theme.error,
+    marginBottom: 8,
+    fontSize: 12,
+  },
+  btn: {
+    height: 50,
+    backgroundColor: theme.secondary,
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    marginTop: 20,
+  },
+});
 
 export default UserForm;

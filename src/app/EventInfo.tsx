@@ -1,5 +1,5 @@
 import ScreenView from "@/components/generic/ScreenView";
-import { useTheme } from "@/hooks/useTheme";
+import { theme } from "@/constants/theme";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
@@ -24,8 +24,6 @@ import { formatAmount, formatDateLong, formatTime } from "../utils/common.util";
 import { IExpenseEvent } from "../utils/interfaces";
 
 const EventInfoScreen: React.FC = () => {
-  const styles = useStyles();
-  const theme = useTheme();
   const insets = useSafeAreaInsets();
   const curEvent = useSelector((state: any) => state.curEvent) as IExpenseEvent;
   const dispatch = useDispatch();
@@ -216,162 +214,154 @@ const EventInfoScreen: React.FC = () => {
 
 export default EventInfoScreen;
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flex: 1,
-          backgroundColor: theme.primary,
-        },
-        header: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 16,
-        },
-        backIcon: {
-          padding: 8,
-        },
-        headerTitle: {
-          fontSize: 26,
-          fontWeight: "bold",
-          color: theme.text,
-        },
-        placeholder: { width: 44 },
-        idCard: {
-          backgroundColor: theme.darkGrey,
-          marginHorizontal: 16,
-          marginBottom: 16,
-          padding: 16,
-          borderRadius: 12,
-          alignItems: "center",
-        },
-        idLabel: {
-          fontSize: 14,
-          color: theme.lightGrey,
-          marginBottom: 4,
-        },
-        idValue: {
-          fontSize: 20,
-          fontWeight: "bold",
-          color: theme.text,
-        },
-        copyHint: {
-          fontSize: 12,
-          color: theme.lightGrey,
-          marginTop: 4,
-          fontStyle: "italic",
-        },
-        dateSection: {
-          flexDirection: "row",
-          alignItems: "flex-start",
-          marginBottom: 24,
-          paddingHorizontal: 16,
-        },
-        dateText: {
-          fontSize: 14,
-          color: theme.lightGrey,
-        },
-        balanceCard: {
-          backgroundColor: theme.darkGrey,
-          marginHorizontal: 16,
-          marginBottom: 24,
-          padding: 20,
-          borderRadius: 16,
-          alignItems: "center",
-        },
-        balanceLabel: {
-          fontSize: 14,
-          color: theme.lightGrey,
-          marginBottom: 4,
-        },
-        balanceValue: {
-          fontSize: 32,
-          fontWeight: "bold",
-          color: theme.text,
-          marginBottom: 8,
-        },
-        amountRow: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          width: "100%",
-        },
-        amountIn: {
-          fontSize: 16,
-          fontWeight: "600",
-        },
-        amountOut: {
-          fontSize: 16,
-          fontWeight: "600",
-        },
-        donationCard: {
-          backgroundColor: theme.darkGrey,
-          marginHorizontal: 16,
-          marginBottom: 24,
-          padding: 20,
-          borderRadius: 16,
-          alignItems: "center",
-        },
-        donationValue: {
-          fontSize: 22,
-          fontWeight: "bold",
-          color: theme.text,
-          marginTop: 8,
-        },
-        membersSection: {
-          paddingHorizontal: 16,
-        },
-        sectionTitle: {
-          fontSize: 18,
-          fontWeight: "600",
-          color: theme.text,
-          marginBottom: 12,
-        },
-        memberRow: {
-          flexDirection: "row",
-          alignItems: "center",
-          marginBottom: 8,
-        },
-        memberName: {
-          marginLeft: 8,
-          fontSize: 16,
-          color: theme.text,
-        },
-        bottomSpacer: {
-          height: 100,
-        },
-        editFab: {
-          position: "absolute",
-          left: 20,
-          width: 70,
-          height: 70,
-          borderRadius: 35,
-          alignItems: "center",
-          justifyContent: "center",
-          elevation: 5,
-          shadowColor: theme.dark,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-        },
-        deleteFab: {
-          position: "absolute",
-          right: 20,
-          width: 70,
-          height: 70,
-          borderRadius: 35,
-          alignItems: "center",
-          justifyContent: "center",
-          elevation: 5,
-          shadowColor: theme.dark,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-        },
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.primary,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+  },
+  backIcon: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: theme.text,
+  },
+  placeholder: { width: 44 },
+  idCard: {
+    backgroundColor: theme.darkGrey,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  idLabel: {
+    fontSize: 14,
+    color: theme.lightGrey,
+    marginBottom: 4,
+  },
+  idValue: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: theme.text,
+  },
+  copyHint: {
+    fontSize: 12,
+    color: theme.lightGrey,
+    marginTop: 4,
+    fontStyle: "italic",
+  },
+  dateSection: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 24,
+    paddingHorizontal: 16,
+  },
+  dateText: {
+    fontSize: 14,
+    color: theme.lightGrey,
+  },
+  balanceCard: {
+    backgroundColor: theme.darkGrey,
+    marginHorizontal: 16,
+    marginBottom: 24,
+    padding: 20,
+    borderRadius: 16,
+    alignItems: "center",
+  },
+  balanceLabel: {
+    fontSize: 14,
+    color: theme.lightGrey,
+    marginBottom: 4,
+  },
+  balanceValue: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: theme.text,
+    marginBottom: 8,
+  },
+  amountRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  amountIn: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  amountOut: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  donationCard: {
+    backgroundColor: theme.darkGrey,
+    marginHorizontal: 16,
+    marginBottom: 24,
+    padding: 20,
+    borderRadius: 16,
+    alignItems: "center",
+  },
+  donationValue: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: theme.text,
+    marginTop: 8,
+  },
+  membersSection: {
+    paddingHorizontal: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: theme.text,
+    marginBottom: 12,
+  },
+  memberRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  memberName: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: theme.text,
+  },
+  bottomSpacer: {
+    height: 100,
+  },
+  editFab: {
+    position: "absolute",
+    left: 20,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 5,
+    shadowColor: theme.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  deleteFab: {
+    position: "absolute",
+    right: 20,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 5,
+    shadowColor: theme.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+});

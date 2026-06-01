@@ -1,5 +1,5 @@
 import ScreenView from "@/components/generic/ScreenView";
-import { useTheme } from "@/hooks/useTheme";
+import { theme } from "@/constants/theme";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -30,9 +30,7 @@ import {
 import { IEventTransaction } from "../utils/interfaces";
 
 const TransactionDetailsScreen: React.FC = () => {
-  const theme = useTheme();
   const { transactionId, eventId } = useLocalSearchParams();
-  const styles = useStyles();
   const { showToast } = useToast();
   const insets = useSafeAreaInsets();
   const curTransaction = useSelector(
@@ -262,174 +260,166 @@ const TransactionDetailsScreen: React.FC = () => {
 
 export default TransactionDetailsScreen;
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flex: 1,
-          backgroundColor: theme.primary,
-        },
-        header: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingHorizontal: 16,
-          paddingTop: 16,
-          paddingBottom: 24,
-        },
-        backIcon: {
-          padding: 8,
-        },
-        headerTitle: {
-          fontSize: 20,
-          fontWeight: "bold",
-          color: theme.text,
-        },
-        placeholder: {
-          width: 44,
-        },
-        typeBadgeContainer: {
-          alignItems: "center",
-          marginBottom: 24,
-        },
-        typeBadge: {
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 20,
-          paddingVertical: 12,
-          borderRadius: 25,
-          elevation: 2,
-          shadowColor: theme.dark,
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.2,
-          shadowRadius: 2,
-        },
-        typeLabel: {
-          fontSize: 16,
-          fontWeight: "600",
-          marginLeft: 8,
-        },
-        amountSection: {
-          alignItems: "center",
-          marginBottom: 32,
-          paddingHorizontal: 16,
-        },
-        amountLabel: {
-          fontSize: 14,
-          color: theme.lightGrey,
-          marginBottom: 8,
-          textTransform: "uppercase",
-          letterSpacing: 1,
-        },
-        amountValue: {
-          fontSize: 42,
-          fontWeight: "bold",
-          textAlign: "center",
-        },
-        detailsContainer: {
-          paddingHorizontal: 16,
-        },
-        detailCard: {
-          backgroundColor: theme.darkGrey,
-          borderRadius: 16,
-          padding: 20,
-          marginBottom: 16,
-          elevation: 3,
-          shadowColor: theme.dark,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-        },
-        cardHeader: {
-          flexDirection: "row",
-          alignItems: "center",
-          marginBottom: 16,
-        },
-        cardTitle: {
-          fontSize: 16,
-          fontWeight: "600",
-          color: theme.text,
-          marginLeft: 8,
-        },
-        cardValue: {
-          fontSize: 18,
-          fontWeight: "bold",
-          color: theme.text,
-          marginBottom: 4,
-        },
-        cardSubValue: {
-          fontSize: 14,
-          color: theme.lightGrey,
-        },
-        itemDetailRow: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 8,
-        },
-        itemLabel: {
-          fontSize: 14,
-          color: theme.lightGrey,
-          fontWeight: "500",
-        },
-        descriptionText: {
-          fontSize: 16,
-          color: theme.text,
-          lineHeight: 24,
-          fontStyle: "italic",
-        },
-        idText: {
-          fontSize: 14,
-          color: theme.lightGrey,
-          fontFamily: "monospace",
-          backgroundColor: theme.primary + "40",
-          padding: 8,
-          borderRadius: 8,
-        },
-        bottomSpacer: {
-          height: 120,
-        },
-        deleteFab: {
-          position: "absolute",
-          right: 20,
-          width: 70,
-          height: 70,
-          borderRadius: 35,
-          alignItems: "center",
-          justifyContent: "center",
-          elevation: 5,
-          shadowColor: theme.dark,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-        },
-        errorContainer: {
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 32,
-        },
-        errorText: {
-          fontSize: 18,
-          color: theme.error,
-          marginTop: 16,
-          marginBottom: 24,
-          textAlign: "center",
-        },
-        backButton: {
-          backgroundColor: theme.secondary,
-          paddingHorizontal: 24,
-          paddingVertical: 12,
-          borderRadius: 8,
-        },
-        backButtonText: {
-          color: theme.text,
-          fontWeight: "600",
-        },
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.primary,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 24,
+  },
+  backIcon: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: theme.text,
+  },
+  placeholder: {
+    width: 44,
+  },
+  typeBadgeContainer: {
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  typeBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+    elevation: 2,
+    shadowColor: theme.dark,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  typeLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 8,
+  },
+  amountSection: {
+    alignItems: "center",
+    marginBottom: 32,
+    paddingHorizontal: 16,
+  },
+  amountLabel: {
+    fontSize: 14,
+    color: theme.lightGrey,
+    marginBottom: 8,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+  },
+  amountValue: {
+    fontSize: 42,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  detailsContainer: {
+    paddingHorizontal: 16,
+  },
+  detailCard: {
+    backgroundColor: theme.darkGrey,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    elevation: 3,
+    shadowColor: theme.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: theme.text,
+    marginLeft: 8,
+  },
+  cardValue: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: theme.text,
+    marginBottom: 4,
+  },
+  cardSubValue: {
+    fontSize: 14,
+    color: theme.lightGrey,
+  },
+  itemDetailRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  itemLabel: {
+    fontSize: 14,
+    color: theme.lightGrey,
+    fontWeight: "500",
+  },
+  descriptionText: {
+    fontSize: 16,
+    color: theme.text,
+    lineHeight: 24,
+    fontStyle: "italic",
+  },
+  idText: {
+    fontSize: 14,
+    color: theme.lightGrey,
+    fontFamily: "monospace",
+    backgroundColor: theme.primary + "40",
+    padding: 8,
+    borderRadius: 8,
+  },
+  bottomSpacer: {
+    height: 120,
+  },
+  deleteFab: {
+    position: "absolute",
+    right: 20,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 5,
+    shadowColor: theme.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 32,
+  },
+  errorText: {
+    fontSize: 18,
+    color: theme.error,
+    marginTop: 16,
+    marginBottom: 24,
+    textAlign: "center",
+  },
+  backButton: {
+    backgroundColor: theme.secondary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: theme.text,
+    fontWeight: "600",
+  },
+});

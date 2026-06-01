@@ -1,4 +1,4 @@
-import { useTheme } from "@/hooks/useTheme";
+import { theme } from "@/constants/theme";
 import { truncateText } from "@/utils/common.util";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import React from "react";
@@ -18,8 +18,6 @@ const ExpenseItemComponent: React.FC<IExpenseItemProps> = ({
   handleDeleteEvent,
   handleEditEvent,
 }) => {
-  const theme = useTheme();
-  const styles = useStyles();
   return (
     <TouchableOpacity
       style={styles.expenseItem}
@@ -55,47 +53,39 @@ const ExpenseItemComponent: React.FC<IExpenseItemProps> = ({
 
 export default ExpenseItemComponent;
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        expenseItem: {
-          backgroundColor: theme.secondary,
-          padding: 16,
-          borderRadius: 10,
-          marginBottom: 12,
-        },
-        expenseContent: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        },
-        expenseInfo: {
-          flex: 1,
-        },
-        expenseTitle: {
-          color: theme.text,
-          fontSize: 16,
-          fontWeight: "bold",
-        },
-        expenseDate: {
-          color: theme.text,
-          fontSize: 14,
-          marginTop: 4,
-        },
-        actionButtons: {
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 8,
-        },
-        actionBtn: {
-          padding: 8,
-          borderRadius: 6,
-        },
-        deleteBtn: {},
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  expenseItem: {
+    backgroundColor: theme.secondary,
+    padding: 16,
+    borderRadius: 10,
+    marginBottom: 12,
+  },
+  expenseContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  expenseInfo: {
+    flex: 1,
+  },
+  expenseTitle: {
+    color: theme.text,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  expenseDate: {
+    color: theme.text,
+    fontSize: 14,
+    marginTop: 4,
+  },
+  actionButtons: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  actionBtn: {
+    padding: 8,
+    borderRadius: 6,
+  },
+  deleteBtn: {},
+});

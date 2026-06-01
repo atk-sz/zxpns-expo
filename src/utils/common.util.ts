@@ -1,4 +1,4 @@
-import { Colors } from "@/constants/theme";
+import { theme } from "@/constants/theme";
 import { IEventTransaction, ITransactionType } from "./interfaces";
 
 export const generateId = (title?: string, length: number = 7) => {
@@ -15,13 +15,13 @@ export const generateId = (title?: string, length: number = 7) => {
 export const getTypeColor = (type: ITransactionType) => {
   switch (type) {
     case "incoming":
-      return Colors.dark.success;
+      return theme.success;
     case "outgoing":
-      return Colors.dark.error;
+      return theme.error;
     case "item":
-      return Colors.dark.warning;
+      return theme.warning;
     default:
-      return Colors.dark.text;
+      return theme.text;
   }
 };
 

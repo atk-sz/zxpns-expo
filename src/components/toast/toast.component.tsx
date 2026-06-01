@@ -1,4 +1,4 @@
-import { useTheme } from "@/hooks/useTheme";
+import { theme } from "@/constants/theme";
 import React, { useEffect, useRef } from "react";
 import { Animated, Dimensions, StyleSheet, Text } from "react-native";
 
@@ -10,8 +10,6 @@ interface ToastProps {
 }
 
 const ToastComponent: React.FC<ToastProps> = ({ message, type }) => {
-  const theme = useTheme();
-
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const translateYAnim = useRef(new Animated.Value(30)).current;
 

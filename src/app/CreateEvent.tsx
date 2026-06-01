@@ -1,8 +1,8 @@
 import ExpenseEventForm from "@/components/forms/expense-event-form.component";
 import ScreenView from "@/components/generic/ScreenView";
 import ConfirmationModal from "@/components/model/confirmationModel.component";
+import { theme } from "@/constants/theme";
 import useConfirmationModal from "@/hooks/useConfirmationModel";
-import { useTheme } from "@/hooks/useTheme";
 import Icon from "@expo/vector-icons/Feather";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -15,8 +15,6 @@ import { generateId } from "../utils/common.util";
 import { IExpenseEvent } from "../utils/interfaces";
 
 const CreateEventScreen: React.FC = (): React.JSX.Element => {
-  const styles = useStyles();
-  const theme = useTheme();
   // Check if we're in edit mode
   const { isEditMode, eventId } = useLocalSearchParams();
   const dispatch = useDispatch();
@@ -223,37 +221,29 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
 
 export default CreateEventScreen;
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flex: 1,
-          backgroundColor: theme.primary,
-          padding: 16,
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        text: {
-          fontSize: 20,
-          color: theme.text,
-        },
-        closeFab: {
-          position: "absolute",
-          width: 60,
-          height: 60,
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        label: {
-          color: theme.text,
-          fontSize: 14,
-          marginBottom: 4,
-          fontWeight: "bold",
-        },
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.primary,
+    padding: 16,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    fontSize: 20,
+    color: theme.text,
+  },
+  closeFab: {
+    position: "absolute",
+    width: 60,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  label: {
+    color: theme.text,
+    fontSize: 14,
+    marginBottom: 4,
+    fontWeight: "bold",
+  },
+});

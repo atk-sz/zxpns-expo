@@ -15,7 +15,7 @@ import {
 import EventTransactionForm from "@/components/forms/event-transaction-form.component";
 import ScreenView from "@/components/generic/ScreenView";
 import TransactionItemComponent from "@/components/list-items/TransactionItem.component";
-import { useTheme } from "@/hooks/useTheme";
+import { theme } from "@/constants/theme";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -32,8 +32,6 @@ import {
 } from "../utils/common.util";
 
 const EventDetailsScreen: React.FC = () => {
-  const styles = useStyles();
-  const theme = useTheme();
   const { id } = useLocalSearchParams();
   const { showToast } = useToast();
   const insets = useSafeAreaInsets();
@@ -219,127 +217,119 @@ const EventDetailsScreen: React.FC = () => {
 
 export default EventDetailsScreen;
 
-const useStyles = () => {
-  const theme = useTheme();
-
-  return React.useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flex: 1,
-          backgroundColor: theme.primary,
-          padding: 16,
-          justifyContent: "flex-start",
-          alignItems: "center",
-        },
-        title: {
-          fontSize: 30,
-          fontWeight: "bold",
-          textAlign: "center",
-          color: theme.text,
-          textTransform: "uppercase",
-          marginBottom: 15,
-        },
-        row: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          width: "100%",
-          marginBottom: 10,
-        },
-        card: {
-          flex: 1,
-          backgroundColor: theme.darkGrey,
-          borderRadius: 12,
-          padding: 16,
-          marginHorizontal: 4,
-          alignItems: "center",
-          elevation: 3,
-          shadowColor: theme.dark,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-        },
-        balanceCard: {
-          marginHorizontal: 8,
-        },
-        cardLabel: {
-          fontSize: 14,
-          color: theme.lightGrey,
-          marginBottom: 8,
-          fontWeight: "500",
-        },
-        cardValue: {
-          fontSize: 21,
-          fontWeight: "bold",
-        },
-        incomeText: {
-          color: theme.success,
-        },
-        expenseText: {
-          color: theme.error,
-        },
-        balanceText: {
-          color: theme.info,
-          fontSize: 24,
-          fontWeight: "bold",
-        },
-        fab: {
-          position: "absolute",
-          width: 70,
-          height: 70,
-          borderRadius: 35,
-          alignItems: "center",
-          justifyContent: "center",
-          elevation: 5,
-          shadowColor: theme.dark,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-        },
-        eventDetailsFab: {
-          width: 60,
-          height: 60,
-          borderRadius: 30,
-        },
-        // Transaction List Styles
-        transactionsContainer: {
-          flex: 1,
-          width: "100%",
-          marginTop: 10,
-        },
-        transactionsHeaderContainer: {
-          width: "100%",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 16,
-          paddingLeft: 4,
-        },
-        transactionsTitle: {
-          fontSize: 20,
-          fontWeight: "bold",
-          color: theme.text,
-        },
-        transactionsSubTitle: {
-          flexDirection: "row",
-        },
-        transactionsCounts: {
-          flexDirection: "row",
-          alignItems: "center",
-        },
-        transactionsList: {
-          paddingBottom: 100, // Extra space for FAB !IMPORTANT
-        },
-        balanceAmount: {
-          fontSize: 14,
-          color: theme.info,
-          fontWeight: "600",
-        },
-        separator: {
-          height: 12,
-        },
-      }),
-    [theme],
-  );
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.primary,
+    padding: 16,
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: theme.text,
+    textTransform: "uppercase",
+    marginBottom: 15,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginBottom: 10,
+  },
+  card: {
+    flex: 1,
+    backgroundColor: theme.darkGrey,
+    borderRadius: 12,
+    padding: 16,
+    marginHorizontal: 4,
+    alignItems: "center",
+    elevation: 3,
+    shadowColor: theme.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  balanceCard: {
+    marginHorizontal: 8,
+  },
+  cardLabel: {
+    fontSize: 14,
+    color: theme.lightGrey,
+    marginBottom: 8,
+    fontWeight: "500",
+  },
+  cardValue: {
+    fontSize: 21,
+    fontWeight: "bold",
+  },
+  incomeText: {
+    color: theme.success,
+  },
+  expenseText: {
+    color: theme.error,
+  },
+  balanceText: {
+    color: theme.info,
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  fab: {
+    position: "absolute",
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 5,
+    shadowColor: theme.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  eventDetailsFab: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+  },
+  // Transaction List Styles
+  transactionsContainer: {
+    flex: 1,
+    width: "100%",
+    marginTop: 10,
+  },
+  transactionsHeaderContainer: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+    paddingLeft: 4,
+  },
+  transactionsTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: theme.text,
+  },
+  transactionsSubTitle: {
+    flexDirection: "row",
+  },
+  transactionsCounts: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  transactionsList: {
+    paddingBottom: 100, // Extra space for FAB !IMPORTANT
+  },
+  balanceAmount: {
+    fontSize: 14,
+    color: theme.info,
+    fontWeight: "600",
+  },
+  separator: {
+    height: 12,
+  },
+});
