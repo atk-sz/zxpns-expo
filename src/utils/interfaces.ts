@@ -37,3 +37,10 @@ export interface IEventTransaction {
   worth?: string;
   itemName?: string;
 }
+
+export interface ITransactionsCount {
+  incoming: number;
+  outgoing: number;
+  item: number;
+  total: number;
+}

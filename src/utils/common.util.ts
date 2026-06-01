@@ -1,4 +1,5 @@
-import { IEventTransaction } from "./interfaces";
+import { Colors } from "@/constants/theme";
+import { IEventTransaction, ITransactionType } from "./interfaces";
 
 export const generateId = (title?: string, length: number = 7) => {
   const unique = Math.random()
@@ -11,18 +12,18 @@ export const generateId = (title?: string, length: number = 7) => {
   return unique;
 };
 
-// export const getTypeColor = (type: ITransactionType) => {
-//   switch (type) {
-//     case 'incoming':
-//       return DarkTheme.success;
-//     case 'outgoing':
-//       return DarkTheme.error;
-//     case 'item':
-//       return DarkTheme.orange;
-//     default:
-//       return DarkTheme.text;
-//   }
-// };
+export const getTypeColor = (type: ITransactionType) => {
+  switch (type) {
+    case "incoming":
+      return Colors.dark.success;
+    case "outgoing":
+      return Colors.dark.error;
+    case "item":
+      return Colors.dark.orange;
+    default:
+      return Colors.dark.text;
+  }
+};
 
 export const getTypeIcon = (type: string) => {
   switch (type) {

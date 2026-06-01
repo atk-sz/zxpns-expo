@@ -53,12 +53,14 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
   const onSubmitCreate = async (newEvent: IExpenseEvent) => {
     dispatch(addEvent(newEvent));
     dispatch(saveCurEvent(newEvent));
-    // router.replace("/EventDetails", { id: newEvent.id });
+    router.replace({
+      pathname: "/EventDetails",
+      params: { id: newEvent.id },
+    });
     // navigation.replace('EventDetails', { id: newEvent.id });
   };
 
   const onSubmitUpdate = async (updatedEvent: IExpenseEvent) => {
-    console.log("Updating event with values:", updatedEvent);
     dispatch(
       updateEvent({
         id: updatedEvent.id,
@@ -70,7 +72,6 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
     );
     dispatch(saveCurEvent(updatedEvent));
     showToast("Event updated successfully", "success");
-    console.log("Event updated successfully");
     router.back();
   };
 
@@ -124,7 +125,6 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
   };
 
   const handleSubmit = () => {
-    console.log("Submitting form with values:", formValues);
     // Update title with trimmed value
     const updatedFormValues = { ...formValues, title: formValues.title.trim() };
     setFormValues(updatedFormValues);
@@ -138,7 +138,6 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
     } else {
       const newId = generateId(updatedFormValues.title, 8);
       const newEvent = { ...updatedFormValues, id: newId };
-      console.log("clickinsubmit");
       onSubmitCreate(newEvent);
     }
   };
