@@ -1,15 +1,16 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IEventTransaction, IExpenseEvent } from '../../utils/interfaces';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IEventTransaction, IExpenseEvent } from "../../utils/interfaces";
 
 const initialState: IExpenseEvent = {
-  id: '',
-  title: '',
-  startDate: '',
+  id: "",
+  title: "",
+  startDate: "",
   isMultiDay: false,
-  balanceAmount: '0',
-  incomingAmount: '0',
-  outgoingAmount: '0',
-  endDate: '',
+  isGroupEvent: false,
+  balanceAmount: "0",
+  incomingAmount: "0",
+  outgoingAmount: "0",
+  endDate: "",
   transactions: [],
   open: true,
 };
@@ -17,11 +18,11 @@ const initialState: IExpenseEvent = {
 // 🔹 Utility: Recalculate overall totals
 const recalcTotals = (state: IExpenseEvent) => {
   const incoming = state.transactions
-    .filter(t => t.type === 'incoming')
+    .filter((t) => t.type === "incoming")
     .reduce((sum, t) => sum + parseFloat(t.amount.toString()), 0);
 
   const outgoing = state.transactions
-    .filter(t => t.type === 'outgoing')
+    .filter((t) => t.type === "outgoing")
     .reduce((sum, t) => sum + parseFloat(t.amount.toString()), 0);
 
   state.incomingAmount = incoming.toString();
@@ -33,10 +34,10 @@ const recalcTotals = (state: IExpenseEvent) => {
 const recalcRunningBalances = (state: IExpenseEvent) => {
   let runningBalance = 0;
 
-  state.transactions.forEach(t => {
+  state.transactions.forEach((t) => {
     const amt = parseFloat(t.amount.toString());
 
-    if (t.type === 'incoming') {
+    if (t.type === "incoming") {
       runningBalance += amt;
     } else {
       runningBalance -= amt;
@@ -63,17 +64,23 @@ const findInsertIndex = (
 };
 
 const curEventSlice = createSlice({
-  name: 'curEvent',
+  name: "curEvent",
   initialState,
   reducers: {
     saveCurEvent: (_, action: PayloadAction<IExpenseEvent>) => action.payload,
     clearCurEvent: () => initialState,
-    addTransactionToCurEvent: (state, action: PayloadAction<IEventTransaction>) => {
+    addTransactionToCurEvent: (
+      state,
+      action: PayloadAction<IEventTransaction>,
+    ) => {
       const newTransaction = { ...action.payload };
       const newTransactionDate = new Date(newTransaction.date);
 
       // Find correct insert index
-      const insertIndex = findInsertIndex(state.transactions, newTransactionDate);
+      const insertIndex = findInsertIndex(
+        state.transactions,
+        newTransactionDate,
+      );
 
       // Insert at calculated index
       state.transactions.splice(insertIndex, 0, newTransaction);
@@ -84,7 +91,7 @@ const curEventSlice = createSlice({
     },
 
     deleteTransactionFromCurEvent: (state, action: PayloadAction<string>) => {
-      const idx = state.transactions.findIndex(t => t.id === action.payload);
+      const idx = state.transactions.findIndex((t) => t.id === action.payload);
       if (idx === -1) return;
 
       state.transactions.splice(idx, 1);
@@ -95,10 +102,13 @@ const curEventSlice = createSlice({
 
     updateTransactionInCurEvent: (
       state,
-      action: PayloadAction<{ id: string; updatedTransaction: Partial<IEventTransaction> }>,
+      action: PayloadAction<{
+        id: string;
+        updatedTransaction: Partial<IEventTransaction>;
+      }>,
     ) => {
       const { id, updatedTransaction } = action.payload;
-      const idx = state.transactions.findIndex(t => t.id === id);
+      const idx = state.transactions.findIndex((t) => t.id === id);
       if (idx === -1) return;
 
       Object.assign(state.transactions[idx], updatedTransaction);

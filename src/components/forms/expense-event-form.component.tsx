@@ -3,6 +3,8 @@ import { formatDateLong } from "@/utils/common.util";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React from "react";
 import {
+  Keyboard,
+  Pressable,
   StyleSheet,
   Switch,
   Text,
@@ -35,6 +37,11 @@ const ExpenseEventForm: React.FC<IExpenseEventFormProps> = ({
   handleChange,
   handleSubmit,
 }) => {
+  const toggleEventValue = (key: "isMultiDay" | "isGroupEvent") => {
+    Keyboard.dismiss();
+    handleChange(key, !formValues[key]);
+  };
+
   return (
     <View style={styles.formContainer}>
       {/* Title */}
@@ -84,20 +91,52 @@ const ExpenseEventForm: React.FC<IExpenseEventFormProps> = ({
         <Text style={styles.errorText}>{formErrors.startDate ?? " "}</Text>
       </View>
 
+      {/* Group Event Toggle */}
+      {!isEditMode && (
+        <View style={styles.formComponentContainer}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.switchContainer,
+              pressed && {
+                opacity: 0.8,
+                backgroundColor: theme.dark,
+                borderRadius: 8,
+              },
+            ]}
+            onPress={() => toggleEventValue("isGroupEvent")}
+          >
+            <Text style={styles.label}>Group event?</Text>
+            <Switch
+              value={formValues.isGroupEvent}
+              onValueChange={() => toggleEventValue("isGroupEvent")}
+              thumbColor={theme.text}
+              trackColor={{ false: theme.grey, true: theme.secondary }}
+            />
+          </Pressable>
+        </View>
+      )}
+
       {/* Multi-day Toggle */}
       <View style={styles.formComponentContainer}>
-        <View style={styles.switchContainer}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.switchContainer,
+            pressed && {
+              opacity: 0.8,
+              backgroundColor: theme.dark,
+              borderRadius: 8,
+            },
+          ]}
+          onPress={() => toggleEventValue("isMultiDay")}
+        >
           <Text style={styles.label}>Multi-day event?</Text>
           <Switch
             value={formValues.isMultiDay}
-            onValueChange={(value) => {
-              if (!value) handleChange("endDate", "");
-              handleChange("isMultiDay", value);
-            }}
+            onValueChange={() => toggleEventValue("isMultiDay")}
             thumbColor={theme.text}
             trackColor={{ false: theme.grey, true: theme.secondary }}
           />
-        </View>
+        </Pressable>
       </View>
 
       {/* End Date (only if multi-day) */}

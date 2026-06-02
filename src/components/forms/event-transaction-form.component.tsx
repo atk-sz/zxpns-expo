@@ -14,15 +14,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSelector } from "react-redux";
 import {
   formatDateLong,
   formatDateTimeISO,
   formatTime12hrs,
   generateId,
   getTypeColor,
-  getTypeIcon
+  getTypeIcon,
 } from "../../utils/common.util";
-import { IEventTransaction } from "../../utils/interfaces";
+import { IEventTransaction, IExpenseEvent } from "../../utils/interfaces";
 import ToastComponent from "../toast/toast.component";
 
 interface IEventTransactionFormProps {
@@ -38,6 +39,7 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
   onClose,
   onSubmit,
 }) => {
+  const curEvent = useSelector((state: any) => state.curEvent) as IExpenseEvent;
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [formErrors, setFormErrors] = useState<
     Partial<Record<keyof IEventTransaction, string>>
@@ -188,6 +190,17 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
         errors.amount = "Amount must be greater than 0";
       } else if (amountNum > 9999999999) {
         errors.amount = "Amount must be less than 9999999999";
+      }
+      if (formValues.type === "incoming") {
+        const newBal = Number(curEvent.balanceAmount) + amountNum;
+        if (newBal > 99999999999)
+          errors.amount =
+            "Balance after this transaction exceeds limit of 99999999999";
+      } else if (formValues.type === "outgoing") {
+        const newBal = Number(curEvent.balanceAmount) - amountNum;
+        if (newBal < -99999999999)
+          errors.amount =
+            "Balance after this transaction is less than -99999999999";
       }
     }
 

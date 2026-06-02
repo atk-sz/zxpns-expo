@@ -37,6 +37,7 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
     title: "",
     startDate: "",
     isMultiDay: false,
+    isGroupEvent: false,
     balanceAmount: "0",
     incomingAmount: "0",
     outgoingAmount: "0",
