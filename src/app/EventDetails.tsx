@@ -168,7 +168,6 @@ const EventDetailsScreen: React.FC = () => {
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.transactionsList}
-            // eslint-disable-next-line react/no-unstable-nested-components
             ItemSeparatorComponent={() => <View style={styles.separator} />}
           />
         </View>

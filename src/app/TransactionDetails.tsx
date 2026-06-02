@@ -148,7 +148,7 @@ const TransactionDetailsScreen: React.FC = () => {
               { color: getTypeColor(curTransaction.type) },
             ]}
           >
-            ₹{formatAmount(curTransaction.amount)}
+            {formatAmount(curTransaction.amount)}
           </Text>
         </View>
 
@@ -175,7 +175,7 @@ const TransactionDetailsScreen: React.FC = () => {
               <Text style={styles.cardTitle}>Balance After</Text>
             </View>
             <Text style={[styles.cardValue, { color: theme.info }]}>
-              ₹{formatAmount(curTransaction.balanceAmountNow)}
+              {formatAmount(curTransaction.balanceAmountNow)}
             </Text>
           </View>
 
@@ -198,7 +198,7 @@ const TransactionDetailsScreen: React.FC = () => {
                 <View style={styles.itemDetailRow}>
                   <Text style={styles.itemLabel}>Worth:</Text>
                   <Text style={[styles.cardValue, { color: theme.warning }]}>
-                    ₹{formatAmount(curTransaction.worth)}
+                    {formatAmount(curTransaction.worth)}
                   </Text>
                 </View>
               )}

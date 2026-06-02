@@ -6,7 +6,13 @@ import useConfirmationModal from "@/hooks/useConfirmationModel";
 import Icon from "@expo/vector-icons/Feather";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Keyboard,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "../contexts/toast.context";
 import { saveCurEvent } from "../redux/slices/event";
@@ -189,32 +195,33 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
 
   return (
     <ScreenView>
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={[
-            styles.closeFab,
-            {
-              top: 20,
-              left: 20,
-              // backgroundColor: theme.info,
-            },
-          ]}
-          onPress={handleCancelPress}
-        >
-          <Icon name="x" size={30} color={theme.text} />
-        </TouchableOpacity>
-        <ExpenseEventForm
-          showEndDatePicker={showEndDatePicker}
-          showStartDatePicker={showStartDatePicker}
-          formValues={formValues}
-          formErrors={formErrors}
-          isEditMode={isEditMode === "true"}
-          setShowStartDatePicker={setShowStartDatePicker}
-          setShowEndDatePicker={setShowEndDatePicker}
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-        />
-      </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={[
+              styles.closeFab,
+              {
+                top: 10,
+                left: 20,
+              },
+            ]}
+            onPress={handleCancelPress}
+          >
+            <Icon name="x" size={30} color={theme.text} />
+          </TouchableOpacity>
+          <ExpenseEventForm
+            showEndDatePicker={showEndDatePicker}
+            showStartDatePicker={showStartDatePicker}
+            formValues={formValues}
+            formErrors={formErrors}
+            isEditMode={isEditMode === "true"}
+            setShowStartDatePicker={setShowStartDatePicker}
+            setShowEndDatePicker={setShowEndDatePicker}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+          />
+        </View>
+      </TouchableWithoutFeedback>
       <ConfirmationModal
         isVisible={isVisible}
         config={config}

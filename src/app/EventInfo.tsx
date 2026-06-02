@@ -123,14 +123,14 @@ const EventInfoScreen: React.FC = () => {
         <View style={styles.balanceCard}>
           <Text style={styles.balanceLabel}>Balance</Text>
           <Text style={styles.balanceValue}>
-            ₹{formatAmount(curEvent.balanceAmount)}
+            {formatAmount(curEvent.balanceAmount)}
           </Text>
           <View style={styles.amountRow}>
             <Text style={[styles.amountIn, { color: theme.success }]}>
-              +₹{formatAmount(curEvent.incomingAmount)}
+              +{formatAmount(curEvent.incomingAmount)}
             </Text>
             <Text style={[styles.amountOut, { color: theme.error }]}>
-              -₹{formatAmount(curEvent.outgoingAmount)}
+              -{formatAmount(curEvent.outgoingAmount)}
             </Text>
           </View>
         </View>
@@ -139,7 +139,7 @@ const EventInfoScreen: React.FC = () => {
         <View style={styles.donationCard}>
           <Text style={styles.sectionTitle}>Total Donation Worth</Text>
           <Text style={styles.donationValue}>
-            ₹{formatAmount(totalWorth.toString())}
+            {formatAmount(totalWorth.toString())}
           </Text>
         </View>
 

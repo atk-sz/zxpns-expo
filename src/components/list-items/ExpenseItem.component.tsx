@@ -1,5 +1,5 @@
 import { theme } from "@/constants/theme";
-import { truncateText } from "@/utils/common.util";
+import { formatDateLong, truncateText } from "@/utils/common.util";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -30,7 +30,9 @@ const ExpenseItemComponent: React.FC<IExpenseItemProps> = ({
           <Text style={styles.expenseTitle}>
             {truncateText(item.title, 15)}
           </Text>
-          <Text style={styles.expenseDate}>{item.startDate}</Text>
+          <Text style={styles.expenseDate}>
+            {formatDateLong(item.startDate)}
+          </Text>
         </View>
         <View style={styles.actionButtons}>
           <TouchableOpacity
