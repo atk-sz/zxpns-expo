@@ -3,6 +3,7 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useEffect, useState } from "react";
 import {
+  Keyboard,
   Modal,
   Platform,
   Pressable,
@@ -13,7 +14,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { generateId, getTypeColor, getTypeIcon } from "../../utils/common.util";
+import {
+  formatDateLong,
+  formatDateTimeISO,
+  formatTime12hrs,
+  generateId,
+  getTypeColor,
+  getTypeIcon
+} from "../../utils/common.util";
 import { IEventTransaction } from "../../utils/interfaces";
 import ToastComponent from "../toast/toast.component";
 
@@ -40,36 +48,13 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
-  // Helper functions for date and time formatting
-  const formatDate = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
-  const formatTime = (date: Date) => {
-    let hours = date.getHours();
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12;
-    hours = hours || 12; // 0 becomes 12
-
-    return `${hours}:${minutes} ${ampm}`;
-  };
-
-  const formatDateTime = (date: Date) => {
-    return `${formatDate(date)}T${formatTime(date)}`;
-  };
-
   const [formValues, setFormValues] = useState<IEventTransaction>({
     id: "",
     amount: "",
     type: "incoming",
     balanceAmountNow: "",
     description: "",
-    date: formatDateTime(new Date()),
+    date: formatDateTimeISO(new Date()),
     eventId: eventId,
     worth: "",
     itemName: "",
@@ -100,7 +85,7 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
       setSelectedDate(newSelectedDate);
       setFormValues((prev) => ({
         ...prev,
-        date: formatDateTime(newSelectedDate),
+        date: formatDateTimeISO(newSelectedDate),
       }));
 
       // Clear date error when date is changed
@@ -123,7 +108,10 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
       newDateTime.setMinutes(time.getMinutes());
 
       setSelectedDate(newDateTime);
-      setFormValues((prev) => ({ ...prev, date: formatDateTime(newDateTime) }));
+      setFormValues((prev) => ({
+        ...prev,
+        date: formatDateTimeISO(newDateTime),
+      }));
 
       // Clear date error when time is changed
       if (formErrors.date) {
@@ -152,7 +140,7 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
       amount: "",
       type: "incoming",
       description: "",
-      date: formatDateTime(newDate),
+      date: formatDateTimeISO(newDate),
       balanceAmountNow: "",
       eventId: eventId,
       worth: "",
@@ -271,7 +259,13 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <Pressable onPress={(e) => e.stopPropagation()} style={{ flex: 1 }}>
+          <Pressable
+            onPress={(e) => {
+              e.stopPropagation();
+              Keyboard.dismiss();
+            }}
+            style={{ flex: 1 }}
+          >
             <Text style={styles.formTitle}>ADD TRANSACTION</Text>
             <Text
               style={[styles.text, { marginBottom: 10, fontWeight: "bold" }]}
@@ -391,7 +385,7 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
                   <View style={styles.dateTimeButtonContent}>
                     <Icon name="calendar" size={20} color={theme.secondary} />
                     <Text style={styles.dateTimeButtonText}>
-                      {formatDate(selectedDate)}
+                      {formatDateLong(selectedDate)}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -403,7 +397,7 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
                   <View style={styles.dateTimeButtonContent}>
                     <Icon name="clock" size={20} color={theme.secondary} />
                     <Text style={styles.dateTimeButtonText}>
-                      {formatTime(selectedDate)}
+                      {formatTime12hrs(selectedDate)}
                     </Text>
                   </View>
                 </TouchableOpacity>

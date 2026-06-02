@@ -22,7 +22,7 @@ import store from "../redux/store";
 import {
   formatAmount,
   formatDateLong,
-  formatTime,
+  formatTime12hrs,
   getTypeColor,
   getTypeIcon,
   getTypeLabel,
@@ -164,7 +164,7 @@ const TransactionDetailsScreen: React.FC = () => {
               {formatDateLong(curTransaction.date)}
             </Text>
             <Text style={styles.cardSubValue}>
-              {formatTime(curTransaction.date)}
+              {formatTime12hrs(curTransaction.date)}
             </Text>
           </View>
 

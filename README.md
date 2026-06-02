@@ -15,6 +15,7 @@ eas build:configure
 
 S5: to build
 eas build
+eas build --platform android --local
 eas build --platform android --profile development
 eas build --platform ios --profile development
 

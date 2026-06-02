@@ -20,7 +20,7 @@ import { useToast } from "../contexts/toast.context";
 import useConfirmationModal from "../hooks/useConfirmationModel";
 import { clearCurEvent } from "../redux/slices/event";
 import { deleteEvent } from "../redux/slices/events";
-import { formatAmount, formatDateLong, formatTime } from "../utils/common.util";
+import { formatAmount, formatDateLong } from "../utils/common.util";
 import { IExpenseEvent } from "../utils/interfaces";
 
 const EventInfoScreen: React.FC = () => {
@@ -108,17 +108,12 @@ const EventInfoScreen: React.FC = () => {
           <Icon name="calendar" size={20} color={theme.info} />
           <View style={{ marginLeft: 8 }}>
             <Text style={styles.dateText}>
-              {formatDateLong(curEvent.startDate)} (
-              {formatTime(curEvent.startDate)})
+              {formatDateLong(curEvent.startDate)}
             </Text>
             {curEvent.isMultiDay && (
               <Text style={styles.dateText}>
                 →{" "}
-                {curEvent.endDate
-                  ? `${formatDateLong(curEvent.endDate)} (${formatTime(
-                      curEvent.endDate,
-                    )})`
-                  : ""}
+                {curEvent.endDate ? `${formatDateLong(curEvent.endDate)}` : ""}
               </Text>
             )}
           </View>

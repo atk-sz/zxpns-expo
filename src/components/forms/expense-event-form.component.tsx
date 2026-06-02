@@ -1,4 +1,5 @@
 import { theme } from "@/constants/theme";
+import { formatDateLong } from "@/utils/common.util";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React from "react";
 import {
@@ -60,7 +61,9 @@ const ExpenseEventForm: React.FC<IExpenseEventFormProps> = ({
           onPress={() => setShowStartDatePicker(true)}
         >
           <Text style={{ color: theme.dark }}>
-            {formValues.startDate || "Select date"}
+            {formValues.startDate
+              ? formatDateLong(formValues.startDate)
+              : "Select date"}
           </Text>
         </TouchableOpacity>
         {showStartDatePicker && (
@@ -106,7 +109,9 @@ const ExpenseEventForm: React.FC<IExpenseEventFormProps> = ({
             onPress={() => setShowEndDatePicker(true)}
           >
             <Text style={{ color: theme.dark }}>
-              {formValues.endDate || "Select date"}
+              {formValues.endDate
+                ? formatDateLong(formValues.endDate)
+                : "Select date"}
             </Text>
           </TouchableOpacity>
           {showEndDatePicker && (
@@ -144,8 +149,9 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     width: "100%",
-    marginTop: 100,
+    marginTop: 50,
     backgroundColor: theme.primary,
+    paddingTop: "25%",
     padding: 16,
     borderRadius: 10,
   },
@@ -163,7 +169,6 @@ const styles = StyleSheet.create({
     color: theme.dark,
     padding: 12,
     borderRadius: 8,
-    marginBottom: 12,
   },
   errorText: {
     color: theme.error,

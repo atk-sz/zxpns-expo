@@ -4,7 +4,8 @@ import React from "react";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import {
   formatAmount,
-  formatDate,
+  formatDateLong,
+  formatTime12hrs,
   getTypeColor,
   getTypeIcon,
 } from "../../utils/common.util";
@@ -114,7 +115,9 @@ const TransactionItemComponent: React.FC<ITransactionItemProps> = ({
 
         {/* Row 3: DateTime and Balance Amount */}
         <View style={styles.row3}>
-          <Text style={styles.dateTime}>{formatDate(item.date)}</Text>
+          <Text style={styles.dateTime}>
+            {formatDateLong(item.date)} | {formatTime12hrs(item.date)}
+          </Text>
           <Text style={styles.dateTime}>
             Bal: {formatAmount(item.balanceAmountNow)}
           </Text>
