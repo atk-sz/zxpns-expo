@@ -121,23 +121,29 @@ const EventInfoScreen: React.FC = () => {
 
         {/* Balance Section */}
         <View style={styles.balanceCard}>
-          <Text style={styles.balanceLabel}>Balance</Text>
+          <Text style={styles.amountsLabel}>Balance</Text>
           <Text style={styles.balanceValue}>
             {formatAmount(curEvent.balanceAmount)}
           </Text>
           <View style={styles.amountRow}>
-            <Text style={[styles.amountIn, { color: theme.success }]}>
-              +{formatAmount(curEvent.incomingAmount)}
-            </Text>
-            <Text style={[styles.amountOut, { color: theme.error }]}>
-              -{formatAmount(curEvent.outgoingAmount)}
-            </Text>
+            <View>
+              <Text style={styles.amountsLabel}>Income</Text>
+              <Text style={[styles.amountIn, { color: theme.success }]}>
+                +{formatAmount(curEvent.incomingAmount)}
+              </Text>
+            </View>
+            <View>
+              <Text style={styles.amountsLabel}>Expense</Text>
+              <Text style={[styles.amountOut, { color: theme.error }]}>
+                -{formatAmount(curEvent.outgoingAmount)}
+              </Text>
+            </View>
           </View>
         </View>
 
         {/* Donations Worth */}
         <View style={styles.donationCard}>
-          <Text style={styles.sectionTitle}>Total Donation Worth</Text>
+          <Text style={styles.amountsLabel}>Total Donation Worth</Text>
           <Text style={styles.donationValue}>
             {formatAmount(totalWorth.toString())}
           </Text>
@@ -271,15 +277,15 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
   },
-  balanceLabel: {
+  amountsLabel: {
     fontSize: 14,
     color: theme.lightGrey,
     marginBottom: 4,
   },
   balanceValue: {
+    color: theme.info,
     fontSize: 32,
     fontWeight: "bold",
-    color: theme.text,
     marginBottom: 8,
   },
   amountRow: {
@@ -306,7 +312,7 @@ const styles = StyleSheet.create({
   donationValue: {
     fontSize: 22,
     fontWeight: "bold",
-    color: theme.text,
+    color: theme.warning,
     marginTop: 8,
   },
   membersSection: {
