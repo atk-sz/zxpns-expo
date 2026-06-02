@@ -1,12 +1,11 @@
 import { theme } from "@/constants/theme";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
-import React, { useState } from "react";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -50,9 +49,14 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
   };
 
   const formatTime = (date: Date) => {
-    const hours = String(date.getHours()).padStart(2, "0");
+    let hours = date.getHours();
     const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${hours}:${minutes}`;
+
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours || 12; // 0 becomes 12
+
+    return `${hours}:${minutes} ${ampm}`;
   };
 
   const formatDateTime = (date: Date) => {
@@ -84,17 +88,20 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
     }
   };
 
-  const onDateChange = (event: DateTimePickerEvent, date?: Date) => {
-    setShowDatePicker(Platform.OS === "ios");
-    if (event.type === "set" && date) {
+  const onDateChange = (_: any, date?: Date) => {
+    setShowDatePicker(false);
+    if (date) {
       // Keep the same time, only update the date part
       const currentDateTime = new Date(selectedDate);
-      const newDateTime = new Date(date);
-      newDateTime.setHours(currentDateTime.getHours());
-      newDateTime.setMinutes(currentDateTime.getMinutes());
+      const newSelectedDate = new Date(date);
+      newSelectedDate.setHours(currentDateTime.getHours());
+      newSelectedDate.setMinutes(currentDateTime.getMinutes());
 
-      setSelectedDate(newDateTime);
-      setFormValues((prev) => ({ ...prev, date: formatDateTime(newDateTime) }));
+      setSelectedDate(newSelectedDate);
+      setFormValues((prev) => ({
+        ...prev,
+        date: formatDateTime(newSelectedDate),
+      }));
 
       // Clear date error when date is changed
       if (formErrors.date) {
@@ -107,9 +114,9 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
     }
   };
 
-  const onTimeChange = (event: DateTimePickerEvent, time?: Date) => {
-    setShowTimePicker(Platform.OS === "ios");
-    if (event.type === "set" && time) {
+  const onTimeChange = (_: any, time?: Date) => {
+    setShowTimePicker(false);
+    if (time) {
       // Keep the same date, only update the time part
       const newDateTime = new Date(selectedDate);
       newDateTime.setHours(time.getHours());
@@ -170,10 +177,10 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
       if (!formValues.worth) {
         errors.worth = "Item value(worth) in amount(approx) is required";
       }
-      // formValues.worth must be a number & greater than 0 & less than 9999999999
+
       const worthNum = Number(formValues.worth);
       if (isNaN(worthNum)) {
-        errors.worth = "Item value(worth) must be a number";
+        errors.worth = "Item value(worth) must be a valid number";
       } else if (worthNum <= 0) {
         errors.worth = "Item value(worth) must be greater than 0";
       } else if (worthNum > 9999999999) {
@@ -188,7 +195,7 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
     } else if (formValues.type !== "item") {
       const amountNum = Number(formValues.amount);
       if (isNaN(amountNum)) {
-        errors.amount = "Amount must be a number";
+        errors.amount = "Enter valid amount";
       } else if (amountNum <= 0) {
         errors.amount = "Amount must be greater than 0";
       } else if (amountNum > 9999999999) {
@@ -199,6 +206,16 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
     // Validate date & time
     if (isNaN(selectedDate.getTime())) {
       errors.date = "Please enter a valid date & time";
+    }
+
+    // check if datetime is in the future
+    const now = new Date();
+    if (selectedDate.getTime() > now.getTime()) {
+      errors.date = "Date & time cannot be in the future";
+    }
+
+    if (formValues.description.trim() === "") {
+      errors.description = "Description is required";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -225,6 +242,16 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
     onClose();
   };
 
+  useEffect(() => {
+    // clear toast so that it can be triggered(showed) again
+    if (showErrorToast) {
+      const timer = setTimeout(() => {
+        setShowErrorToast(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showErrorToast]);
+
   return (
     <Modal
       visible={visible}
@@ -238,191 +265,197 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
           type="error"
         />
       )}
-      <View style={styles.overlay}>
+      <Pressable style={styles.overlay} onPress={handleClose}>
         <ScrollView
           style={styles.formContainer}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <Text style={styles.formTitle}>ADD TRANSACTION</Text>
-          <Text style={[styles.text, { marginBottom: 10, fontWeight: "bold" }]}>
-            Event: {formValues.eventId}
-          </Text>
+          <Pressable onPress={(e) => e.stopPropagation()} style={{ flex: 1 }}>
+            <Text style={styles.formTitle}>ADD TRANSACTION</Text>
+            <Text
+              style={[styles.text, { marginBottom: 10, fontWeight: "bold" }]}
+            >
+              Event: {formValues.eventId}
+            </Text>
 
-          {/* Transaction Type Selection */}
-          <View style={styles.formComponentContainer}>
-            <Text style={styles.label}>Transaction Type *</Text>
-            <View style={styles.typeButtonsContainer}>
-              {(["incoming", "outgoing", "item"] as const).map((type) => (
-                <TouchableOpacity
-                  key={type}
-                  style={[
-                    styles.typeButton,
-                    {
-                      backgroundColor:
-                        formValues.type === type
-                          ? getTypeColor(type)
-                          : theme.grey + "40",
-                      borderColor:
-                        formValues.type === type
-                          ? getTypeColor(type)
-                          : theme.grey,
-                    },
-                  ]}
-                  onPress={() => handleChange("type", type)}
-                >
-                  <Icon
-                    name={getTypeIcon(type)}
-                    size={20}
-                    color={formValues.type === type ? theme.text : theme.grey}
-                  />
-                  <Text
+            {/* Transaction Type Selection */}
+            <View style={styles.formComponentContainer}>
+              <Text style={styles.label}>Transaction Type *</Text>
+              <View style={styles.typeButtonsContainer}>
+                {(["incoming", "outgoing", "item"] as const).map((type) => (
+                  <TouchableOpacity
+                    key={type}
                     style={[
-                      styles.typeButtonText,
+                      styles.typeButton,
                       {
-                        color:
-                          formValues.type === type ? theme.text : theme.grey,
-                        fontWeight:
-                          formValues.type === type ? "bold" : "normal",
+                        backgroundColor:
+                          formValues.type === type
+                            ? getTypeColor(type)
+                            : theme.grey + "40",
+                        borderColor:
+                          formValues.type === type
+                            ? getTypeColor(type)
+                            : theme.grey,
                       },
                     ]}
+                    onPress={() => handleChange("type", type)}
                   >
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </Text>
+                    <Icon
+                      name={getTypeIcon(type)}
+                      size={20}
+                      color={formValues.type === type ? theme.text : theme.grey}
+                    />
+                    <Text
+                      style={[
+                        styles.typeButtonText,
+                        {
+                          color:
+                            formValues.type === type ? theme.text : theme.grey,
+                          fontWeight:
+                            formValues.type === type ? "bold" : "normal",
+                        },
+                      ]}
+                    >
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            {/* Item Name (only for 'item' type) */}
+            {formValues.type === "item" && (
+              <View style={styles.formComponentContainer}>
+                <Text style={styles.label}>Item Name *</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter item name"
+                  placeholderTextColor={theme.grey}
+                  value={formValues.itemName}
+                  onChangeText={(val) => handleChange("itemName", val)}
+                  maxLength={25}
+                />
+                <Text style={styles.errorText}>
+                  {formErrors.itemName ?? " "}
+                </Text>
+              </View>
+            )}
+
+            {/* Worth (only for 'item' type) */}
+            {formValues.type === "item" && (
+              <View style={styles.formComponentContainer}>
+                <Text style={styles.label}>Worth *</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter worth"
+                  keyboardType="decimal-pad"
+                  placeholderTextColor={theme.grey}
+                  value={formValues.worth}
+                  onChangeText={(val) => {
+                    const cleaned = val.replace(/[^0-9.]/g, "");
+                    handleChange("worth", cleaned);
+                  }}
+                />
+                <Text style={styles.errorText}>{formErrors.worth ?? " "}</Text>
+              </View>
+            )}
+
+            {/* Amount (only for non-item types) */}
+            {formValues.type !== "item" && (
+              <View style={styles.formComponentContainer}>
+                <Text style={styles.label}>Amount *</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter amount"
+                  keyboardType="decimal-pad"
+                  placeholderTextColor={theme.grey}
+                  value={formValues.amount}
+                  onChangeText={(val) => {
+                    const cleaned = val.replace(/[^0-9.]/g, "");
+                    handleChange("amount", cleaned);
+                  }}
+                />
+                <Text style={styles.errorText}>{formErrors.amount ?? " "}</Text>
+              </View>
+            )}
+
+            {/* Date & Time Pickers */}
+            <View style={styles.formComponentContainer}>
+              <Text style={styles.label}>Date & Time *</Text>
+              <View style={styles.dateTimeContainer}>
+                <TouchableOpacity
+                  style={[styles.dateTimeButton, { width: "65%" }]}
+                  onPress={showDatePickerModal}
+                >
+                  <View style={styles.dateTimeButtonContent}>
+                    <Icon name="calendar" size={20} color={theme.secondary} />
+                    <Text style={styles.dateTimeButtonText}>
+                      {formatDate(selectedDate)}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
-              ))}
-            </View>
-          </View>
 
-          {/* Item Name (only for 'item' type) */}
-          {formValues.type === "item" && (
+                <TouchableOpacity
+                  style={[styles.dateTimeButton, { width: "33%" }]}
+                  onPress={showTimePickerModal}
+                >
+                  <View style={styles.dateTimeButtonContent}>
+                    <Icon name="clock" size={20} color={theme.secondary} />
+                    <Text style={styles.dateTimeButtonText}>
+                      {formatTime(selectedDate)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.errorText}>{formErrors.date ?? " "}</Text>
+            </View>
+
+            {/* Description */}
             <View style={styles.formComponentContainer}>
-              <Text style={styles.label}>Item Name *</Text>
+              <Text style={styles.label}>Description*</Text>
               <TextInput
-                style={styles.input}
-                placeholder="Enter item name"
+                style={[styles.input, styles.textArea]}
+                placeholder="Enter description"
                 placeholderTextColor={theme.grey}
-                value={formValues.itemName}
-                onChangeText={(val) => handleChange("itemName", val)}
-                maxLength={25}
+                value={formValues.description}
+                onChangeText={(val) =>
+                  handleChange(
+                    "description",
+                    val.length <= 1000 ? val : formValues.description,
+                  )
+                }
+                multiline
+                numberOfLines={3}
+                maxLength={1000}
               />
-              <Text style={styles.errorText}>{formErrors.itemName ?? " "}</Text>
+              <Text style={styles.errorText}>
+                {formErrors.description ?? " "}
+              </Text>
             </View>
-          )}
 
-          {/* Amount (only for non-item types) */}
-          {formValues.type !== "item" && (
-            <View style={styles.formComponentContainer}>
-              <Text style={styles.label}>Amount *</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter amount"
-                keyboardType="decimal-pad"
-                placeholderTextColor={theme.grey}
-                value={formValues.amount}
-                onChangeText={(val) => {
-                  const cleaned = val.replace(/[^0-9.]/g, "");
-                  handleChange("amount", cleaned);
-                }}
-              />
-              <Text style={styles.errorText}>{formErrors.amount ?? " "}</Text>
-            </View>
-          )}
-
-          {/* Worth (only for 'item' type) */}
-          {formValues.type === "item" && (
-            <View style={styles.formComponentContainer}>
-              <Text style={styles.label}>Worth *</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter worth"
-                keyboardType="decimal-pad"
-                placeholderTextColor={theme.grey}
-                value={formValues.worth}
-                onChangeText={(val) => {
-                  const cleaned = val.replace(/[^0-9.]/g, "");
-                  handleChange("worth", cleaned);
-                }}
-              />
-              <Text style={styles.errorText}>{formErrors.worth ?? " "}</Text>
-            </View>
-          )}
-
-          {/* Date & Time Pickers */}
-          <View style={styles.formComponentContainer}>
-            <Text style={styles.label}>Date & Time *</Text>
-            <View style={styles.dateTimeContainer}>
+            {/* Actions */}
+            <View style={styles.buttonRow}>
               <TouchableOpacity
-                style={[styles.dateTimeButton, { width: "70%" }]}
-                onPress={showDatePickerModal}
+                style={[styles.actionBtn, styles.cancelBtn]}
+                onPress={handleClose}
               >
-                <View style={styles.dateTimeButtonContent}>
-                  <Icon name="calendar" size={20} color={theme.secondary} />
-                  <Text style={styles.dateTimeButtonText}>
-                    {formatDate(selectedDate)}
-                  </Text>
-                </View>
+                <Text style={styles.cancelText}>Cancel</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.dateTimeButton, { width: "28%" }]}
-                onPress={showTimePickerModal}
+                style={[styles.actionBtn, styles.submitBtn]}
+                onPress={handleSubmit}
               >
-                <View style={styles.dateTimeButtonContent}>
-                  <Icon name="clock" size={20} color={theme.secondary} />
-                  <Text style={styles.dateTimeButtonText}>
-                    {formatTime(selectedDate)}
-                  </Text>
-                </View>
+                <Text style={styles.submitText}>Add</Text>
               </TouchableOpacity>
             </View>
-            <Text style={styles.errorText}>{formErrors.date ?? " "}</Text>
-          </View>
 
-          {/* Description */}
-          <View style={styles.formComponentContainer}>
-            <Text style={styles.label}>Description</Text>
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              placeholder="Enter description"
-              placeholderTextColor={theme.grey}
-              value={formValues.description}
-              onChangeText={(val) =>
-                handleChange(
-                  "description",
-                  val.length <= 1000 ? val : formValues.description,
-                )
-              }
-              multiline
-              numberOfLines={3}
-              maxLength={1000}
-            />
-            <Text style={styles.errorText}>
-              {formErrors.description ?? " "}
-            </Text>
-          </View>
-
-          {/* Actions */}
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.actionBtn, styles.cancelBtn]}
-              onPress={handleClose}
-            >
-              <Text style={styles.cancelText}>Cancel</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.actionBtn, styles.submitBtn]}
-              onPress={handleSubmit}
-            >
-              <Text style={styles.submitText}>Add</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Add some bottom padding for better scrolling */}
-          <View style={{ height: 30 }} />
+            {/* Add some bottom padding for better scrolling */}
+            <View style={{ height: 30 }} />
+          </Pressable>
         </ScrollView>
-      </View>
+      </Pressable>
 
       {/* Date Picker */}
       {showDatePicker && (
@@ -430,7 +463,9 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
           value={selectedDate}
           mode="date"
           display={Platform.OS === "ios" ? "spinner" : "default"}
-          onChange={onDateChange}
+          onValueChange={onDateChange}
+          onDismiss={() => setShowDatePicker(false)}
+          onNeutralButtonPress={() => setShowDatePicker(false)}
           maximumDate={new Date()}
         />
       )}
@@ -441,7 +476,9 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
           value={selectedDate}
           mode="time"
           display={Platform.OS === "ios" ? "spinner" : "default"}
-          onChange={onTimeChange}
+          onValueChange={onTimeChange}
+          onDismiss={() => setShowTimePicker(false)}
+          onNeutralButtonPress={() => setShowTimePicker(false)}
         />
       )}
     </Modal>
