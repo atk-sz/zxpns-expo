@@ -1,6 +1,6 @@
 import { theme } from "@/constants/theme";
 import { IUserState } from "@/utils/interfaces";
-import Icon from "@expo/vector-icons/MaterialIcons";
+import { Image } from "expo-image";
 import React from "react";
 import {
   KeyboardAvoidingView,
@@ -36,7 +36,13 @@ const UserForm: React.FC<IUserFormProps> = ({
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.titleContainer}>
-          <Icon name="diversity-2" size={30} color={theme.text} />
+          <Image
+            source={require("../../../assets/images/logo.png")}
+            style={{
+              width: 50,
+              height: 50,
+            }}
+          />
           <Text style={styles.titleText}>Zxpense</Text>
         </View>
         <View style={styles.inputContainer}>

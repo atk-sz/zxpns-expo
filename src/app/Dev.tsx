@@ -48,7 +48,9 @@ const DevScreen: React.FC = (): React.JSX.Element => {
     router.push("/Home");
   };
 
-  const goToLogin = (): void => {};
+  const goToLogin = (): void => {
+    router.push("/Login");
+  };
 
   const goToProfile = (): void => {};
 
