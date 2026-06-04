@@ -279,12 +279,12 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
             }}
             style={{ flex: 1 }}
           >
-            <Text style={styles.formTitle}>ADD TRANSACTION</Text>
-            <Text
-              style={[styles.text, { marginBottom: 10, fontWeight: "bold" }]}
-            >
-              Event: {formValues.eventId}
-            </Text>
+            <View style={styles.headerContainer}>
+              <Text style={styles.formTitle}>Add transaction</Text>
+              <Text style={styles.headerSubtitle}>
+                Log incoming, outgoing, or item details for this event.
+              </Text>
+            </View>
 
             {/* Transaction Type Selection */}
             <View style={styles.formComponentContainer}>
@@ -335,14 +335,16 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
             {formValues.type === "item" && (
               <View style={styles.formComponentContainer}>
                 <Text style={styles.label}>Item Name *</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter item name"
-                  placeholderTextColor={theme.grey}
-                  value={formValues.itemName}
-                  onChangeText={(val) => handleChange("itemName", val)}
-                  maxLength={25}
-                />
+                <View style={styles.inputWrapper}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter item name"
+                    placeholderTextColor={theme.grey}
+                    value={formValues.itemName}
+                    onChangeText={(val) => handleChange("itemName", val)}
+                    maxLength={25}
+                  />
+                </View>
                 <Text style={styles.errorText}>
                   {formErrors.itemName ?? " "}
                 </Text>
@@ -353,17 +355,19 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
             {formValues.type === "item" && (
               <View style={styles.formComponentContainer}>
                 <Text style={styles.label}>Worth *</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter worth"
-                  keyboardType="decimal-pad"
-                  placeholderTextColor={theme.grey}
-                  value={formValues.worth}
-                  onChangeText={(val) => {
-                    const cleaned = val.replace(/[^0-9.]/g, "");
-                    handleChange("worth", cleaned);
-                  }}
-                />
+                <View style={styles.inputWrapper}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter worth"
+                    keyboardType="decimal-pad"
+                    placeholderTextColor={theme.grey}
+                    value={formValues.worth}
+                    onChangeText={(val) => {
+                      const cleaned = val.replace(/[^0-9.]/g, "");
+                      handleChange("worth", cleaned);
+                    }}
+                  />
+                </View>
                 <Text style={styles.errorText}>{formErrors.worth ?? " "}</Text>
               </View>
             )}
@@ -372,17 +376,19 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
             {formValues.type !== "item" && (
               <View style={styles.formComponentContainer}>
                 <Text style={styles.label}>Amount *</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter amount"
-                  keyboardType="decimal-pad"
-                  placeholderTextColor={theme.grey}
-                  value={formValues.amount}
-                  onChangeText={(val) => {
-                    const cleaned = val.replace(/[^0-9.]/g, "");
-                    handleChange("amount", cleaned);
-                  }}
-                />
+                <View style={styles.inputWrapper}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter amount"
+                    keyboardType="decimal-pad"
+                    placeholderTextColor={theme.grey}
+                    value={formValues.amount}
+                    onChangeText={(val) => {
+                      const cleaned = val.replace(/[^0-9.]/g, "");
+                      handleChange("amount", cleaned);
+                    }}
+                  />
+                </View>
                 <Text style={styles.errorText}>{formErrors.amount ?? " "}</Text>
               </View>
             )}
@@ -420,22 +426,24 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
 
             {/* Description */}
             <View style={styles.formComponentContainer}>
-              <Text style={styles.label}>Description*</Text>
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                placeholder="Enter description"
-                placeholderTextColor={theme.grey}
-                value={formValues.description}
-                onChangeText={(val) =>
-                  handleChange(
-                    "description",
-                    val.length <= 1000 ? val : formValues.description,
-                  )
-                }
-                multiline
-                numberOfLines={3}
-                maxLength={1000}
-              />
+              <Text style={styles.label}>Description *</Text>
+              <View style={[styles.inputWrapper, styles.textAreaWrapper]}>
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  placeholder="Enter description"
+                  placeholderTextColor={theme.grey}
+                  value={formValues.description}
+                  onChangeText={(val) =>
+                    handleChange(
+                      "description",
+                      val.length <= 1000 ? val : formValues.description,
+                    )
+                  }
+                  multiline
+                  numberOfLines={4}
+                  maxLength={1000}
+                />
+              </View>
               <Text style={styles.errorText}>
                 {formErrors.description ?? " "}
               </Text>
@@ -503,17 +511,46 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     backgroundColor: theme.primary,
-    borderRadius: 10,
-    padding: 16,
-    width: "90%",
-    maxHeight: "80%",
+    borderRadius: 18,
+    padding: 24,
+    width: "92%",
+    maxHeight: "85%",
+    borderWidth: 1,
+    borderColor: theme.grey,
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 18,
+  },
+  headerContainer: {
+    flex: 1,
+    alignItems: "center",
+    marginBottom: 10,
   },
   formTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: "700",
     color: theme.text,
-    textAlign: "center",
+    marginBottom: 4,
     textTransform: "uppercase",
+  },
+  headerSubtitle: {
+    color: theme.lightGrey,
+    fontSize: 14,
+    lineHeight: 20,
+    alignSelf: "center",
+  },
+  eventLabel: {
+    color: theme.grey,
+    fontSize: 12,
+    marginBottom: 4,
+    textTransform: "uppercase",
+    letterSpacing: 0.7,
+  },
+  eventValue: {
+    color: theme.text,
+    fontSize: 14,
     marginBottom: 16,
   },
   text: {
@@ -521,51 +558,66 @@ const styles = StyleSheet.create({
     color: theme.text,
   },
   formComponentContainer: {
-    marginBottom: 16,
+    marginBottom: 10,
   },
   label: {
     color: theme.text,
     fontSize: 14,
-    marginBottom: 4,
-    fontWeight: "bold",
+    marginBottom: 8,
+    fontWeight: "600",
+  },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: theme.dark,
+    borderWidth: 2,
+    borderColor: theme.grey,
+    borderRadius: 10,
+    paddingHorizontal: 12,
   },
   input: {
-    backgroundColor: theme.white,
-    color: theme.dark,
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 4,
+    color: theme.text,
+    fontSize: 16,
+    paddingVertical: 14,
+    flex: 1,
+  },
+  textAreaWrapper: {
+    paddingVertical: 12,
+    minHeight: 110,
+    alignItems: "flex-start",
   },
   textArea: {
-    minHeight: 80,
+    minHeight: 90,
     textAlignVertical: "top",
   },
   errorText: {
     color: theme.error,
     fontSize: 12,
-    marginTop: 2,
+    marginTop: 6,
     minHeight: 16,
   },
   dateTimeContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 8,
+    gap: 12,
   },
   dateTimeButton: {
-    backgroundColor: theme.white,
-    borderRadius: 8,
-    padding: 12,
-    minHeight: 48,
+    backgroundColor: theme.dark,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: theme.grey,
+    padding: 14,
+    minHeight: 52,
     justifyContent: "center",
   },
   dateTimeButtonContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
+    gap: 10,
   },
   dateTimeButtonText: {
-    color: theme.dark,
+    color: theme.text,
     fontSize: 14,
     fontWeight: "500",
   },
@@ -576,43 +628,46 @@ const styles = StyleSheet.create({
   },
   typeButton: {
     flex: 1,
-    padding: 10,
-    borderRadius: 8,
+    padding: 12,
+    borderRadius: 10,
     borderWidth: 2,
     alignItems: "center",
     justifyContent: "center",
-    minHeight: 55,
+    minHeight: 58,
   },
   typeButtonText: {
-    fontSize: 11,
-    marginTop: 4,
+    fontSize: 12,
+    marginTop: 6,
     textAlign: "center",
   },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 12,
+    marginBottom: 16,
   },
   actionBtn: {
     flex: 1,
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: "center",
-    minHeight: 48,
+    minHeight: 52,
     justifyContent: "center",
   },
   cancelBtn: {
-    backgroundColor: theme.white,
+    backgroundColor: theme.dark,
+    borderWidth: 1,
+    borderColor: theme.grey,
   },
   submitBtn: {
     backgroundColor: theme.secondary,
   },
   cancelText: {
-    color: theme.dark,
+    color: theme.text,
     fontWeight: "600",
   },
   submitText: {
     color: theme.text,
-    fontWeight: "600",
+    fontWeight: "700",
   },
 });

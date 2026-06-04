@@ -180,6 +180,16 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
     } else router.back();
   };
 
+  const onDatePickerToggle = (pickerType: "start" | "end", show: boolean) => {
+    if (pickerType === "start") setShowStartDatePicker(show);
+    else setShowEndDatePicker(show);
+  };
+
+  const onDateChange = (date: string, pickerType: "start" | "end") => {
+    if (pickerType === "start") handleChange("startDate", date);
+    else if (pickerType === "end") handleChange("endDate", date);
+  };
+
   // Load event data for edit mode
   useEffect(() => {
     if (isEditMode === "true" && eventId) {
@@ -216,8 +226,8 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
             formValues={formValues}
             formErrors={formErrors}
             isEditMode={isEditMode === "true"}
-            setShowStartDatePicker={setShowStartDatePicker}
-            setShowEndDatePicker={setShowEndDatePicker}
+            onDateChange={onDateChange}
+            onDatePickerToggle={onDatePickerToggle}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
           />
@@ -240,9 +250,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.primary,
-    padding: 16,
-    justifyContent: "center",
-    alignItems: "center",
   },
   text: {
     fontSize: 20,

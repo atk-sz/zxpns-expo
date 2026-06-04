@@ -1,6 +1,7 @@
-import { theme } from "@/constants/theme";
+import { Spacing, theme } from "@/constants/theme";
 import useConfirmationModal from "@/hooks/useConfirmationModel";
 import Icon from "@expo/vector-icons/MaterialIcons";
+import { Image } from "expo-image";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -88,12 +89,22 @@ const ExpenseEventsList: React.FC<IExpenseEventsListProps> = ({ expenses }) => {
 
   return (
     <View style={styles.wrapper}>
-      <TouchableOpacity
-        style={styles.createEventBtn}
-        onPress={onPressCreateEvent}
-      >
+      <View style={styles.headerContainer}>
+        <Image
+          source={require("../../../assets/images/logo.png")}
+          style={styles.logo}
+        />
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.titleText}>Zxpense</Text>
+          <Text style={styles.subtitleText}>
+            Manage events & track expenses
+          </Text>
+        </View>
+      </View>
+
+      <TouchableOpacity style={styles.actionBtn} onPress={onPressCreateEvent}>
         <Icon name="add" size={20} color={theme.text} />
-        <Text style={styles.createEventText}>Create New Event</Text>
+        <Text style={styles.actionBtnText}>Create New Event</Text>
       </TouchableOpacity>
       <Text style={styles.listTitle}>Your Events</Text>
       {expenses.length === 0 ? (
@@ -126,32 +137,58 @@ export default ExpenseEventsList;
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+    paddingTop: Spacing.three,
+    paddingHorizontal: Spacing.three,
   },
   listTitle: {
     fontSize: 18,
     fontWeight: "bold",
     color: theme.text,
     marginBottom: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 0,
   },
   listContainer: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 0,
     paddingBottom: 16,
   },
-  createEventBtn: {
-    backgroundColor: theme.secondary,
-    padding: 16,
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: Spacing.three,
+    gap: Spacing.two,
+  },
+  logo: {
+    width: 44,
+    height: 44,
     borderRadius: 10,
-    marginBottom: 12,
+  },
+  headerTextContainer: {
+    flex: 1,
+  },
+  titleText: {
+    color: theme.text,
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  subtitleText: {
+    color: theme.lightGrey,
+    fontSize: 13,
+    marginTop: 2,
+  },
+  actionBtn: {
+    backgroundColor: theme.secondary,
+    padding: 14,
+    borderRadius: 12,
+    marginBottom: Spacing.three,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   },
-  createEventText: {
+  actionBtnText: {
     color: theme.text,
     fontSize: 16,
-    fontWeight: "bold",
-    marginLeft: 8,
+    fontWeight: "700",
+    marginLeft: 10,
   },
   emptyMessage: {
     textAlign: "center",

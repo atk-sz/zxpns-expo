@@ -130,11 +130,11 @@ export const formatDateLong = (date: string | Date) => {
   } else {
     dateObj = date;
   }
-  return dateObj.toLocaleDateString("en-US", {
-    weekday: "long",
+  return dateObj.toLocaleDateString("en-IN", {
+    weekday: "short",
     year: "numeric",
-    month: "long",
-    day: "numeric",
+    month: "short",
+    day: "2-digit",
   });
 };
 
