@@ -22,6 +22,7 @@ interface ISignupFormValues {
   lastName: string;
   email: string;
   password: string;
+  confirmPassword: string;
 }
 
 interface ISignupFormErrors {
@@ -29,18 +30,21 @@ interface ISignupFormErrors {
   lastName?: string;
   email?: string;
   password?: string;
+  confirmPassword?: string;
 }
 
 const Signup: React.FC = (): React.JSX.Element => {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formErrors, setFormErrors] = useState<ISignupFormErrors>({});
   const [formValues, setFormValues] = useState<ISignupFormValues>({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   const handleChange = (key: keyof ISignupFormValues, value: string) => {
@@ -88,9 +92,16 @@ const Signup: React.FC = (): React.JSX.Element => {
     } else if (formValues.password.length > 25) {
       errors.password = "Password can be at most 25 characters long";
     } else if (
-      !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/.test(formValues.password)
+      !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).+$/.test(formValues.password)
     ) {
-      errors.password = "Password must contain both letters and numbers";
+      errors.password =
+        "Password must contain letters, a number, and a special character";
+    }
+
+    if (!formValues.confirmPassword.trim()) {
+      errors.confirmPassword = "Please confirm your password";
+    } else if (formValues.confirmPassword !== formValues.password) {
+      errors.confirmPassword = "Passwords do not match";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -112,7 +123,7 @@ const Signup: React.FC = (): React.JSX.Element => {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       showToast("Account created successfully!", "success");
-      router.replace("/Home");
+      // router.replace("/Home");
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Signup failed";
@@ -245,6 +256,42 @@ const Signup: React.FC = (): React.JSX.Element => {
               </TouchableOpacity>
             </View>
             <Text style={styles.errorText}>{formErrors.password ?? " "}</Text>
+          </View>
+
+          {/* Confirm Password */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Confirm Password</Text>
+            <View style={styles.inputWrapper}>
+              <Icon
+                name="lock"
+                size={20}
+                color={theme.grey}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                placeholder="Re-enter your password"
+                placeholderTextColor={theme.grey}
+                value={formValues.confirmPassword}
+                onChangeText={(value) => handleChange("confirmPassword", value)}
+                secureTextEntry={!showConfirmPassword}
+                editable={!loading}
+              />
+              <TouchableOpacity
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                disabled={loading}
+              >
+                <Icon
+                  name={showConfirmPassword ? "visibility" : "visibility-off"}
+                  size={20}
+                  color={theme.grey}
+                  style={styles.inputIcon}
+                />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.errorText}>
+              {formErrors.confirmPassword ?? " "}
+            </Text>
           </View>
 
           <TouchableOpacity
