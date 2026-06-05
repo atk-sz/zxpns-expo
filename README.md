@@ -23,7 +23,6 @@ S6: to install expo compatible packages
 npx expo install <package>
 
 S7: to check if any native changes are done manually, like instead of updating the app.json for title, directly updating the app name inside native code which will be overwritten once predbuild for the app is done
-
 git -C E:\native-apps\zxpense\expo-app diff --stat HEAD -- android/
 
 S8: prebuild(required to see meta changes in native code)

@@ -6,8 +6,13 @@ import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import Icon from "@expo/vector-icons/Ionicons";
+import { useNavigation } from "expo-router";
+import { DrawerActions } from "expo-router/build/react-navigation";
+
 const DevScreen: React.FC = (): React.JSX.Element => {
   const { showLoader, hideLoader } = useLoader();
+  const navigation = useNavigation();
 
   // to acces data from async storage
   // const loadUser = async () => {
@@ -57,6 +62,11 @@ const DevScreen: React.FC = (): React.JSX.Element => {
   return (
     <ScreenView>
       <Text style={styles.text}>Dev Screen</Text>
+      <TouchableOpacity
+        onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+      >
+        <Icon name="menu" size={24} color="white" />
+      </TouchableOpacity>
       <View style={styles.container1}>
         <TouchableOpacity style={styles.btn} onPress={showLoaderFn}>
           <Text>Show Loading</Text>

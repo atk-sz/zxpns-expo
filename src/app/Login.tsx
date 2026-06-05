@@ -1,3 +1,4 @@
+import ScreenView from "@/components/generic/ScreenView";
 import { Spacing, theme } from "@/constants/theme";
 import { useToast } from "@/contexts/toast.context";
 import Icon from "@expo/vector-icons/MaterialIcons";
@@ -5,15 +6,15 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 interface ILoginFormValues {
@@ -118,121 +119,123 @@ const Login: React.FC = (): React.JSX.Element => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView
-        contentContainerStyle={styles.screenContainer}
-        keyboardShouldPersistTaps="handled"
+    <ScreenView>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        {/* Logo and Title */}
-        <View style={styles.titleContainer}>
-          <Image
-            source={require("../../assets/images/logo.png")}
-            style={{
-              width: 40,
-              height: 40,
-            }}
-          />
-          <Text style={styles.titleText}>Zxpense</Text>
-        </View>
-
-        {/* Subtitle */}
-        <Text style={styles.subtitleText}>Welcome Back</Text>
-        <Text style={styles.descriptionText}>
-          Sign in to manage your expenses
-        </Text>
-
-        {/* Email Input */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Email</Text>
-          <View style={styles.inputWrapper}>
-            <Icon
-              name="email"
-              size={20}
-              color={theme.grey}
-              style={styles.inputIcon}
+        <ScrollView
+          contentContainerStyle={styles.screenContainer}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Logo and Title */}
+          <View style={styles.titleContainer}>
+            <Image
+              source={require("../../assets/images/logo.png")}
+              style={{
+                width: 40,
+                height: 40,
+              }}
             />
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your email"
-              placeholderTextColor={theme.grey}
-              value={formValues.email}
-              onChangeText={(value) => handleChange("email", value)}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              editable={!loading}
-            />
+            <Text style={styles.titleText}>Zxpense</Text>
           </View>
-          <Text style={styles.errorText}>{formErrors.email ?? " "}</Text>
-        </View>
 
-        {/* Password Input */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Password</Text>
-          <View style={styles.inputWrapper}>
-            <Icon
-              name="lock"
-              size={20}
-              color={theme.grey}
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={[styles.input, { flex: 1 }]}
-              placeholder="Enter your password"
-              placeholderTextColor={theme.grey}
-              value={formValues.password}
-              onChangeText={(value) => handleChange("password", value)}
-              secureTextEntry={!showPassword}
-              editable={!loading}
-            />
-            <TouchableOpacity
-              onPress={() => setShowPassword(!showPassword)}
-              disabled={loading}
-            >
+          {/* Subtitle */}
+          <Text style={styles.subtitleText}>Welcome Back</Text>
+          <Text style={styles.descriptionText}>
+            Sign in to manage your expenses
+          </Text>
+
+          {/* Email Input */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Email</Text>
+            <View style={styles.inputWrapper}>
               <Icon
-                name={showPassword ? "visibility" : "visibility-off"}
+                name="email"
                 size={20}
                 color={theme.grey}
                 style={styles.inputIcon}
               />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your email"
+                placeholderTextColor={theme.grey}
+                value={formValues.email}
+                onChangeText={(value) => handleChange("email", value)}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!loading}
+              />
+            </View>
+            <Text style={styles.errorText}>{formErrors.email ?? " "}</Text>
+          </View>
+
+          {/* Password Input */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Password</Text>
+            <View style={styles.inputWrapper}>
+              <Icon
+                name="lock"
+                size={20}
+                color={theme.grey}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                placeholder="Enter your password"
+                placeholderTextColor={theme.grey}
+                value={formValues.password}
+                onChangeText={(value) => handleChange("password", value)}
+                secureTextEntry={!showPassword}
+                editable={!loading}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                disabled={loading}
+              >
+                <Icon
+                  name={showPassword ? "visibility" : "visibility-off"}
+                  size={20}
+                  color={theme.grey}
+                  style={styles.inputIcon}
+                />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.errorText}>{formErrors.password ?? " "}</Text>
+          </View>
+
+          {/* Login Button */}
+          <TouchableOpacity
+            style={[styles.loginBtn, loading && styles.loginBtnDisabled]}
+            onPress={onSubmit}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color={theme.text} size="small" />
+            ) : (
+              <Text style={styles.loginBtnText}>Sign In</Text>
+            )}
+          </TouchableOpacity>
+
+          {/* Forgot Password */}
+          <TouchableOpacity
+            onPress={handleForgotPasswordPress}
+            disabled={loading}
+            style={styles.forgotPasswordButton}
+          >
+            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          </TouchableOpacity>
+
+          {/* Sign Up Link */}
+          <View style={styles.signUpContainer}>
+            <Text style={styles.signUpText}>Don't have an account? </Text>
+            <TouchableOpacity onPress={handleSignUpPress} disabled={loading}>
+              <Text style={styles.signUpLinkText}>Sign Up</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.errorText}>{formErrors.password ?? " "}</Text>
-        </View>
-
-        {/* Login Button */}
-        <TouchableOpacity
-          style={[styles.loginBtn, loading && styles.loginBtnDisabled]}
-          onPress={onSubmit}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color={theme.text} size="small" />
-          ) : (
-            <Text style={styles.loginBtnText}>Sign In</Text>
-          )}
-        </TouchableOpacity>
-
-        {/* Forgot Password */}
-        <TouchableOpacity
-          onPress={handleForgotPasswordPress}
-          disabled={loading}
-          style={styles.forgotPasswordButton}
-        >
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-        </TouchableOpacity>
-
-        {/* Sign Up Link */}
-        <View style={styles.signUpContainer}>
-          <Text style={styles.signUpText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={handleSignUpPress} disabled={loading}>
-            <Text style={styles.signUpLinkText}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ScreenView>
   );
 };
 

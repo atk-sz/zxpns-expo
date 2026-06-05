@@ -1,3 +1,4 @@
+import ScreenView from "@/components/generic/ScreenView";
 import { Spacing, theme } from "@/constants/theme";
 import { useToast } from "@/contexts/toast.context";
 import Icon from "@expo/vector-icons/MaterialIcons";
@@ -56,76 +57,78 @@ const ForgotPassword: React.FC = (): React.JSX.Element => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView
-        contentContainerStyle={styles.screenContainer}
-        keyboardShouldPersistTaps="handled"
+    <ScreenView>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.titleContainer}>
-          <Image
-            source={require("../../assets/images/logo.png")}
-            style={styles.logo}
-          />
-          <Text style={styles.titleText}>Recover password</Text>
-        </View>
-
-        <Text style={styles.descriptionText}>
-          Enter the email address associated with your account and we’ll send
-          you a link to reset your password.
-        </Text>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Email</Text>
-          <View style={styles.inputWrapper}>
-            <Icon
-              name="email"
-              size={20}
-              color={theme.grey}
-              style={styles.inputIcon}
+        <ScrollView
+          contentContainerStyle={styles.screenContainer}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.titleContainer}>
+            <Image
+              source={require("../../assets/images/logo.png")}
+              style={styles.logo}
             />
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your email"
-              placeholderTextColor={theme.grey}
-              value={email}
-              onChangeText={(value) => {
-                setEmail(value);
-                if (error) {
-                  setError(undefined);
-                }
-              }}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              editable={!loading}
-            />
+            <Text style={styles.titleText}>Recover password</Text>
           </View>
-          <Text style={styles.errorText}>{error ?? " "}</Text>
-        </View>
 
-        <TouchableOpacity
-          style={[styles.actionBtn, loading && styles.btnDisabled]}
-          onPress={handleSubmit}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color={theme.text} size="small" />
-          ) : (
-            <Text style={styles.actionBtnText}>Send Reset Link</Text>
-          )}
-        </TouchableOpacity>
+          <Text style={styles.descriptionText}>
+            Enter the email address associated with your account and we’ll send
+            you a link to reset your password.
+          </Text>
 
-        <TouchableOpacity
-          style={styles.backToLogin}
-          onPress={() => router.push("/Login")}
-          disabled={loading}
-        >
-          <Text style={styles.signUpLinkText}>Back to Login</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Email</Text>
+            <View style={styles.inputWrapper}>
+              <Icon
+                name="email"
+                size={20}
+                color={theme.grey}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your email"
+                placeholderTextColor={theme.grey}
+                value={email}
+                onChangeText={(value) => {
+                  setEmail(value);
+                  if (error) {
+                    setError(undefined);
+                  }
+                }}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!loading}
+              />
+            </View>
+            <Text style={styles.errorText}>{error ?? " "}</Text>
+          </View>
+
+          <TouchableOpacity
+            style={[styles.actionBtn, loading && styles.btnDisabled]}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color={theme.text} size="small" />
+            ) : (
+              <Text style={styles.actionBtnText}>Send Reset Link</Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.backToLogin}
+            onPress={() => router.push("/Login")}
+            disabled={loading}
+          >
+            <Text style={styles.signUpLinkText}>Back to Login</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ScreenView>
   );
 };
 

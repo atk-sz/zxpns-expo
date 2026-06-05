@@ -1,3 +1,4 @@
+import ScreenView from "@/components/generic/ScreenView";
 import { Spacing, theme } from "@/constants/theme";
 import { useToast } from "@/contexts/toast.context";
 import Icon from "@expo/vector-icons/MaterialIcons";
@@ -86,7 +87,9 @@ const Signup: React.FC = (): React.JSX.Element => {
       errors.password = "Password must be at least 6 characters";
     } else if (formValues.password.length > 25) {
       errors.password = "Password can be at most 25 characters long";
-    } else if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/.test(formValues.password)) {
+    } else if (
+      !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/.test(formValues.password)
+    ) {
       errors.password = "Password must contain both letters and numbers";
     }
 
@@ -124,145 +127,147 @@ const Signup: React.FC = (): React.JSX.Element => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView
-        contentContainerStyle={styles.screenContainer}
-        keyboardShouldPersistTaps="handled"
+    <ScreenView>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.titleContainer}>
-          <Image
-            source={require("../../assets/images/logo.png")}
-            style={styles.logo}
-          />
-          <Text style={styles.titleText}>Zxpense</Text>
-        </View>
-
-        <Text style={styles.subtitleText}>Create your account</Text>
-        <Text style={styles.descriptionText}>
-          Start tracking your events and expenses securely.
-        </Text>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>First Name</Text>
-          <View style={styles.inputWrapper}>
-            <Icon
-              name="person"
-              size={20}
-              color={theme.grey}
-              style={styles.inputIcon}
+        <ScrollView
+          contentContainerStyle={styles.screenContainer}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.titleContainer}>
+            <Image
+              source={require("../../assets/images/logo.png")}
+              style={styles.logo}
             />
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your first name"
-              placeholderTextColor={theme.grey}
-              value={formValues.firstName}
-              onChangeText={(value) => handleChange("firstName", value)}
-              editable={!loading}
-            />
+            <Text style={styles.titleText}>Zxpense</Text>
           </View>
-          <Text style={styles.errorText}>{formErrors.firstName ?? " "}</Text>
-        </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Last Name</Text>
-          <View style={styles.inputWrapper}>
-            <Icon
-              name="person"
-              size={20}
-              color={theme.grey}
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your last name"
-              placeholderTextColor={theme.grey}
-              value={formValues.lastName}
-              onChangeText={(value) => handleChange("lastName", value)}
-              editable={!loading}
-            />
-          </View>
-          <Text style={styles.errorText}>{formErrors.lastName ?? " "}</Text>
-        </View>
+          <Text style={styles.subtitleText}>Create your account</Text>
+          <Text style={styles.descriptionText}>
+            Start tracking your events and expenses securely.
+          </Text>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Email</Text>
-          <View style={styles.inputWrapper}>
-            <Icon
-              name="email"
-              size={20}
-              color={theme.grey}
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your email"
-              placeholderTextColor={theme.grey}
-              value={formValues.email}
-              onChangeText={(value) => handleChange("email", value)}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              editable={!loading}
-            />
-          </View>
-          <Text style={styles.errorText}>{formErrors.email ?? " "}</Text>
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Password</Text>
-          <View style={styles.inputWrapper}>
-            <Icon
-              name="lock"
-              size={20}
-              color={theme.grey}
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={[styles.input, { flex: 1 }]}
-              placeholder="Create a password"
-              placeholderTextColor={theme.grey}
-              value={formValues.password}
-              onChangeText={(value) => handleChange("password", value)}
-              secureTextEntry={!showPassword}
-              editable={!loading}
-            />
-            <TouchableOpacity
-              onPress={() => setShowPassword(!showPassword)}
-              disabled={loading}
-            >
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>First Name</Text>
+            <View style={styles.inputWrapper}>
               <Icon
-                name={showPassword ? "visibility" : "visibility-off"}
+                name="person"
                 size={20}
                 color={theme.grey}
                 style={styles.inputIcon}
               />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your first name"
+                placeholderTextColor={theme.grey}
+                value={formValues.firstName}
+                onChangeText={(value) => handleChange("firstName", value)}
+                editable={!loading}
+              />
+            </View>
+            <Text style={styles.errorText}>{formErrors.firstName ?? " "}</Text>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Last Name</Text>
+            <View style={styles.inputWrapper}>
+              <Icon
+                name="person"
+                size={20}
+                color={theme.grey}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your last name"
+                placeholderTextColor={theme.grey}
+                value={formValues.lastName}
+                onChangeText={(value) => handleChange("lastName", value)}
+                editable={!loading}
+              />
+            </View>
+            <Text style={styles.errorText}>{formErrors.lastName ?? " "}</Text>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Email</Text>
+            <View style={styles.inputWrapper}>
+              <Icon
+                name="email"
+                size={20}
+                color={theme.grey}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your email"
+                placeholderTextColor={theme.grey}
+                value={formValues.email}
+                onChangeText={(value) => handleChange("email", value)}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!loading}
+              />
+            </View>
+            <Text style={styles.errorText}>{formErrors.email ?? " "}</Text>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Password</Text>
+            <View style={styles.inputWrapper}>
+              <Icon
+                name="lock"
+                size={20}
+                color={theme.grey}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                placeholder="Create a password"
+                placeholderTextColor={theme.grey}
+                value={formValues.password}
+                onChangeText={(value) => handleChange("password", value)}
+                secureTextEntry={!showPassword}
+                editable={!loading}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                disabled={loading}
+              >
+                <Icon
+                  name={showPassword ? "visibility" : "visibility-off"}
+                  size={20}
+                  color={theme.grey}
+                  style={styles.inputIcon}
+                />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.errorText}>{formErrors.password ?? " "}</Text>
+          </View>
+
+          <TouchableOpacity
+            style={[styles.actionBtn, loading && styles.btnDisabled]}
+            onPress={onSubmit}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color={theme.text} size="small" />
+            ) : (
+              <Text style={styles.actionBtnText}>Create Account</Text>
+            )}
+          </TouchableOpacity>
+
+          <View style={styles.signInContainer}>
+            <Text style={styles.signUpText}>Already have an account? </Text>
+            <TouchableOpacity onPress={handleLoginPress} disabled={loading}>
+              <Text style={styles.signUpLinkText}>Sign In</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.errorText}>{formErrors.password ?? " "}</Text>
-        </View>
-
-        <TouchableOpacity
-          style={[styles.actionBtn, loading && styles.btnDisabled]}
-          onPress={onSubmit}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color={theme.text} size="small" />
-          ) : (
-            <Text style={styles.actionBtnText}>Create Account</Text>
-          )}
-        </TouchableOpacity>
-
-        <View style={styles.signInContainer}>
-          <Text style={styles.signUpText}>Already have an account? </Text>
-          <TouchableOpacity onPress={handleLoginPress} disabled={loading}>
-            <Text style={styles.signUpLinkText}>Sign In</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ScreenView>
   );
 };
 
