@@ -66,14 +66,6 @@ const Login: React.FC = (): React.JSX.Element => {
 
     if (!formValues.password.trim()) {
       errors.password = "Password is required";
-    } else if (formValues.password.length < 6) {
-      errors.password = "Password must be at least 6 characters";
-    } else if (formValues.password.length > 25) {
-      errors.password = "Password can be at most 25 characters long";
-    } else if (
-      !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/.test(formValues.password)
-    ) {
-      errors.password = "Password must contain both letters and numbers";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -100,7 +92,7 @@ const Login: React.FC = (): React.JSX.Element => {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       showToast("Login successful!", "success");
-      router.replace("/Home");
+      // router.replace("/Home");
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Login failed";

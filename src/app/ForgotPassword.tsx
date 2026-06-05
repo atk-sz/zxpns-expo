@@ -46,6 +46,8 @@ const ForgotPassword: React.FC = (): React.JSX.Element => {
       await new Promise((resolve) => setTimeout(resolve, 1200));
       setError(undefined);
       showToast("Password reset link sent to your email.", "success");
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       router.replace("/Login");
     } catch (error) {
       const errorMessage =
