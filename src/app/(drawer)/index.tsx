@@ -6,10 +6,8 @@ import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import {
-  createTransactionsTable
-} from "@/be/database/sqlite/database";
-import { testDB } from "@/be/database/supabase/transaction";
+// import { testDB } from "@/be/database/supabase/transaction";
+import { getAllTables } from "@/be/database/sqlite/database";
 import useEventsHandler from "@/hooks/useEvents.hook";
 import Icon from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "expo-router";
@@ -65,14 +63,16 @@ const DevScreen: React.FC = (): React.JSX.Element => {
 
   const goToProfile = (): void => {
     console.log("clicked");
-    testDB();
+    // testDB();
   };
 
   const devPress = async () => {
     console.log("clicked devPress");
     try {
-      const res = await createTransactionsTable();
-      // const res = await getDb();
+      // await deleteAllTables();
+      // const res = await createTransactionsTable();
+      // const res = await createEventsTable();
+      const res = await getAllTables();
       // const res = await getAllExpenseEvents();
       console.log("res");
       console.log(res);

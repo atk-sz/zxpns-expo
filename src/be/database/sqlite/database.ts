@@ -16,17 +16,21 @@ export const getOrOpenDBConnection = async () => {
 
 export const createEventsTable = async () => {
   const SQBD = await getOrOpenDBConnection();
+  // eventId TEXT NOT NULL UNIQUE,  -- 6 digit readable ID add later
   await SQBD.execAsync(`
     CREATE TABLE IF NOT EXISTS expense_events (
-      id TEXT PRIMARY KEY,
+      id TEXT PRIMARY KEY,           -- UUID
+
       title TEXT NOT NULL,
       startDate TEXT NOT NULL,
       endDate TEXT,
       isMultiDay INTEGER NOT NULL,
       isGroupEvent INTEGER NOT NULL,
+
       balanceAmount TEXT NOT NULL,
       incomingAmount TEXT NOT NULL,
       outgoingAmount TEXT NOT NULL,
+
       open INTEGER NOT NULL,
       synced INTEGER NOT NULL
     );
@@ -61,4 +65,50 @@ export const getAllTables = async () => {
     ORDER BY name;
   `);
   return tables;
+};
+
+export const deleteEventsTable = async () => {
+  const SQBD = await getOrOpenDBConnection();
+  await SQBD.execAsync(`
+    DROP TABLE IF EXISTS expense_events;
+  `);
+};
+
+export const deleteTransactionsTable = async () => {
+  const SQBD = await getOrOpenDBConnection();
+  await SQBD.execAsync(`
+    DROP TABLE IF EXISTS event_transactions;
+  `);
+};
+
+export const deleteAllTables = async () => {
+  const SQBD = await getOrOpenDBConnection();
+
+  const tables = await SQBD.getAllAsync<{
+    name: string;
+  }>(`
+    SELECT name
+    FROM sqlite_master
+    WHERE type='table'
+      AND name NOT LIKE 'sqlite_%';
+  `);
+
+  for (const table of tables) {
+    await SQBD.execAsync(`DROP TABLE IF EXISTS ${table.name};`);
+  }
+};
+
+export const clearAllData = async () => {
+  const SQBD = await getOrOpenDBConnection();
+
+  await SQBD.execAsync(`
+    DELETE FROM event_transactions;
+    DELETE FROM expense_events;
+  `);
+};
+
+export const deleteDB = async () => {
+  const SQBD = await getOrOpenDBConnection();
+  await SQBD.closeAsync();
+  await SQLite.deleteDatabaseAsync("zxpense.db");
 };
