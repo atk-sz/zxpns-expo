@@ -1,5 +1,6 @@
 import { Spacing, theme } from "@/constants/theme";
 import useConfirmationModal from "@/hooks/useConfirmationModel";
+import useEventsHandler from "@/hooks/useEvents.hook";
 import Icon from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -15,7 +16,6 @@ import { useDispatch } from "react-redux";
 import { useLoader } from "../../contexts/loader.context";
 import { useToast } from "../../contexts/toast.context";
 import { saveCurEvent } from "../../redux/slices/event";
-import { deleteEvent } from "../../redux/slices/events";
 import { IExpenseEvent } from "../../utils/interfaces";
 import ExpenseItemComponent from "../list-items/ExpenseItem.component";
 import ConfirmationModal from "../model/confirmationModel.component";
@@ -28,6 +28,7 @@ const ExpenseEventsList: React.FC<IExpenseEventsListProps> = ({ expenses }) => {
   const dispatch = useDispatch();
   const { showToast } = useToast();
   const { showLoader, hideLoader } = useLoader();
+  const { removeEventById } = useEventsHandler();
 
   const {
     isVisible,
@@ -48,11 +49,16 @@ const ExpenseEventsList: React.FC<IExpenseEventsListProps> = ({ expenses }) => {
       iconName: "alert-circle",
       iconColor: theme.error,
       confirmButtonColor: theme.error,
-      onConfirm: () => {
-        showLoader("Deleting event...");
-        dispatch(deleteEvent(eventId));
-        hideLoader();
-        showToast("Event deleted successfully!", "success");
+      onConfirm: async () => {
+        try {
+          showLoader("Deleting event...");
+          await removeEventById(eventId);
+          hideLoader();
+          showToast("Event deleted successfully!", "success");
+        } catch (error) {
+          console.log(error);
+          showToast("Failed to delete event", "error");
+        }
       },
     });
   };

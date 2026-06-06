@@ -6,6 +6,8 @@ import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import { testDB } from "@/be/database/supabase/transaction";
+import useEventsHandler from "@/hooks/useEvents.hook";
 import Icon from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "expo-router/build/react-navigation";
@@ -13,6 +15,7 @@ import { DrawerActions } from "expo-router/build/react-navigation";
 const DevScreen: React.FC = (): React.JSX.Element => {
   const { showLoader, hideLoader } = useLoader();
   const navigation = useNavigation();
+  const { getAllEvents } = useEventsHandler();
 
   // to acces data from async storage
   // const loadUser = async () => {
@@ -57,7 +60,23 @@ const DevScreen: React.FC = (): React.JSX.Element => {
     router.push("/Login");
   };
 
-  const goToProfile = (): void => {};
+  const goToProfile = (): void => {
+    console.log("clicked");
+    testDB();
+  };
+
+  const devPress = async () => {
+    console.log("clicked devPress");
+    try {
+      const res = await getAllEvents();
+      // const res = await getDb();
+      // const res = await getAllExpenseEvents();
+      console.log("res");
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <ScreenView>
@@ -83,6 +102,9 @@ const DevScreen: React.FC = (): React.JSX.Element => {
       </TouchableOpacity>
       <TouchableOpacity style={styles.btn} onPress={goToLogin}>
         <Text>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.btn} onPress={devPress}>
+        <Text>Create DB/Table</Text>
       </TouchableOpacity>
     </ScreenView>
   );

@@ -13,6 +13,7 @@ const initialState: IExpenseEvent = {
   endDate: "",
   transactions: [],
   open: true,
+  synced: false,
 };
 
 // 🔹 Utility: Recalculate overall totals

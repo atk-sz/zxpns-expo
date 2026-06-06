@@ -1,5 +1,7 @@
 import ScreenView from "@/components/generic/ScreenView";
 import { theme } from "@/constants/theme";
+import useEventsHandler from "@/hooks/useEvents.hook";
+import { RootState } from "@/redux/store";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
@@ -19,16 +21,15 @@ import { useLoader } from "../contexts/loader.context";
 import { useToast } from "../contexts/toast.context";
 import useConfirmationModal from "../hooks/useConfirmationModel";
 import { clearCurEvent } from "../redux/slices/event";
-import { deleteEvent } from "../redux/slices/events";
 import { formatAmount, formatDateLong } from "../utils/common.util";
-import { IExpenseEvent } from "../utils/interfaces";
 
 const EventInfoScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
-  const curEvent = useSelector((state: any) => state.curEvent) as IExpenseEvent;
+  const curEvent = useSelector((state: RootState) => state.curEvent);
   const dispatch = useDispatch();
   const { showToast } = useToast();
   const { showLoader, hideLoader } = useLoader();
+  const { removeEventById } = useEventsHandler();
 
   const {
     isVisible,
@@ -59,14 +60,19 @@ const EventInfoScreen: React.FC = () => {
       iconName: "alert-circle",
       iconColor: theme.error,
       confirmButtonColor: theme.error,
-      onConfirm: () => {
-        showLoader("Deleting event...");
-        dispatch(deleteEvent(curEvent.id));
-        dispatch(clearCurEvent());
-        showToast("Transaction deleted successfully!", "success");
-        hideLoader();
-        router.dismissAll();
-        router.replace("/Home");
+      onConfirm: async () => {
+        try {
+          showLoader("Deleting event...");
+          await removeEventById(curEvent.id);
+          dispatch(clearCurEvent());
+          hideLoader();
+          showToast("Event deleted successfully!", "success");
+          router.dismissAll();
+          router.replace("/Home");
+        } catch (error) {
+          console.log(error);
+          showToast("Failed to delete event", "error");
+        }
       },
     });
   };

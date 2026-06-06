@@ -23,6 +23,7 @@ export interface IExpenseEvent {
   endDate?: string;
   transactions: IEventTransaction[];
   open: boolean;
+  synced: boolean;
 }
 
 export type ITransactionType = "incoming" | "outgoing" | "item";
@@ -37,6 +38,7 @@ export interface IEventTransaction {
   eventId: string;
   worth?: string;
   itemName?: string;
+  synced: boolean;
 }
 
 export interface ITransactionsCount {

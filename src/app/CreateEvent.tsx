@@ -3,6 +3,8 @@ import ScreenView from "@/components/generic/ScreenView";
 import ConfirmationModal from "@/components/model/confirmationModel.component";
 import { theme } from "@/constants/theme";
 import useConfirmationModal from "@/hooks/useConfirmationModel";
+import useEventsHandler from "@/hooks/useEvents.hook";
+import { RootState } from "@/redux/store";
 import Icon from "@expo/vector-icons/Feather";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -16,7 +18,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "../contexts/toast.context";
 import { saveCurEvent } from "../redux/slices/event";
-import { addEvent, updateEvent } from "../redux/slices/events";
 import { generateId } from "../utils/common.util";
 import { IExpenseEvent } from "../utils/interfaces";
 
@@ -25,7 +26,8 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
   const { isEditMode, eventId } = useLocalSearchParams();
   const dispatch = useDispatch();
   const { showToast } = useToast();
-  const events = useSelector((state: any) => state.events) as IExpenseEvent[];
+  const events = useSelector((state: RootState) => state.events);
+  const { createEvent, updateEventById } = useEventsHandler();
 
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
@@ -44,6 +46,7 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
     endDate: "",
     transactions: [],
     open: true,
+    synced: false,
   });
   const [eventToEdit, setEventToEdit] = useState<IExpenseEvent | null>(null);
   const {
@@ -68,27 +71,33 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
   };
 
   const onSubmitCreate = async (newEvent: IExpenseEvent) => {
-    dispatch(addEvent(newEvent));
-    dispatch(saveCurEvent(newEvent));
-    router.replace({
-      pathname: "/EventDetails",
-      params: { id: newEvent.id },
-    });
+    try {
+      await createEvent(newEvent);
+      dispatch(saveCurEvent(newEvent));
+      router.replace({
+        pathname: "/EventDetails",
+        params: { id: newEvent.id },
+      });
+    } catch (error) {
+      console.error("Failed to create event:", error);
+      showToast("Failed to create event", "error");
+    }
   };
 
-  const onSubmitUpdate = async (updatedEvent: IExpenseEvent) => {
-    dispatch(
-      updateEvent({
-        id: updatedEvent.id,
-        updates: {
-          ...eventToEdit,
-          ...updatedEvent,
-        },
-      }),
-    );
-    dispatch(saveCurEvent(updatedEvent));
-    showToast("Event updated successfully", "success");
-    router.back();
+  const onSubmitUpdate = async (updates: IExpenseEvent) => {
+    try {
+      const updatedEvent = {
+        ...eventToEdit,
+        ...updates,
+      };
+      await updateEventById(eventToEdit?.id || "", updatedEvent);
+      dispatch(saveCurEvent(updatedEvent));
+      showToast("Event updated successfully", "success");
+      router.back();
+    } catch (error) {
+      console.error("Failed to update event:", error);
+      showToast("Failed to update event", "error");
+    }
   };
 
   const validateForm = (): boolean => {

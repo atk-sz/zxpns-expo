@@ -1,4 +1,5 @@
 import { theme } from "@/constants/theme";
+import { RootState } from "@/redux/store";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useEffect, useState } from "react";
@@ -23,7 +24,7 @@ import {
   getTypeColor,
   getTypeIcon,
 } from "../../utils/common.util";
-import { IEventTransaction, IExpenseEvent } from "../../utils/interfaces";
+import { IEventTransaction } from "../../utils/interfaces";
 import ToastComponent from "../toast/toast.component";
 
 interface IEventTransactionFormProps {
@@ -39,7 +40,7 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const curEvent = useSelector((state: any) => state.curEvent) as IExpenseEvent;
+  const curEvent = useSelector((state: RootState) => state.curEvent);
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [formErrors, setFormErrors] = useState<
     Partial<Record<keyof IEventTransaction, string>>
@@ -60,6 +61,7 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
     eventId: eventId,
     worth: "",
     itemName: "",
+    synced: false,
   });
 
   const handleChange = (key: keyof IEventTransaction, value: any) => {
@@ -147,6 +149,7 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
       eventId: eventId,
       worth: "",
       itemName: "",
+      synced: false,
     });
     setFormErrors({});
     setShowErrorToast(false);

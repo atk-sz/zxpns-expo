@@ -1,18 +1,25 @@
 import ScreenView from "@/components/generic/ScreenView";
 import ExpenseEventsList from "@/components/lists/expense-events-list.component";
 import { theme } from "@/constants/theme";
+import useEventsHandler from "@/hooks/useEvents.hook";
+import { RootState } from "@/redux/store";
 import Icon from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "expo-router/build/react-navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 const HomeScreen: React.FC = (): React.JSX.Element => {
   const navigation = useNavigation();
-  const events = useSelector((state: any) => state.events);
+  const events = useSelector((state: RootState) => state.events);
 
-  const { firstName, lastName } = useSelector((state: any) => state.user);
+  useEffect(() => {
+    getAllEvents();
+  }, []);
+  const { getAllEvents } = useEventsHandler();
+
+  const { firstName, lastName } = useSelector((state: RootState) => state.user);
 
   return (
     <ScreenView>
