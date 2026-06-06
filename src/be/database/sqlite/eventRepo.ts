@@ -1,9 +1,9 @@
 import { IExpenseEvent } from "@/utils/interfaces";
-import { openConnection } from "./database";
+import { getOrOpenDBConnection } from "./database";
 
 export const eventRepo = {
   async create(event: IExpenseEvent) {
-    const SQBD = await openConnection();
+    const SQBD = await getOrOpenDBConnection();
 
     await SQBD.runAsync(
       `
@@ -39,7 +39,7 @@ export const eventRepo = {
   },
 
   async getAll(): Promise<IExpenseEvent[]> {
-    const SQBD = await openConnection();
+    const SQBD = await getOrOpenDBConnection();
 
     const rows = await SQBD.getAllAsync<any>(`
       SELECT *
@@ -62,12 +62,12 @@ export const eventRepo = {
   },
 
   async remove(id: string) {
-    const SQBD = await openConnection();
+    const SQBD = await getOrOpenDBConnection();
     await SQBD.runAsync(`DELETE FROM expense_events WHERE id = ?`, [id]);
   },
 
   async update(id: string, event: IExpenseEvent) {
-    const SQBD = await openConnection();
+    const SQBD = await getOrOpenDBConnection();
 
     await SQBD.runAsync(
       `
