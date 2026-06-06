@@ -21,7 +21,6 @@ export interface IExpenseEvent {
   incomingAmount: string;
   outgoingAmount: string;
   endDate?: string;
-  transactions: IEventTransaction[];
   open: boolean;
   synced: boolean;
 }

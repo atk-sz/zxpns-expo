@@ -73,7 +73,12 @@ const ExpenseEventsList: React.FC<IExpenseEventsListProps> = ({ expenses }) => {
   const onEventPress = (item: IExpenseEvent) => {
     const foundEvent = expenses.find((e) => e.id === item.id);
     if (!foundEvent) return;
-    dispatch(saveCurEvent(foundEvent));
+    dispatch(
+      saveCurEvent({
+        eventDetails: foundEvent,
+        transactions: [],
+      }),
+    );
     router.push({
       pathname: "/EventDetails",
       params: { id: item.id },

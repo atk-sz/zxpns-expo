@@ -46,7 +46,7 @@ const EventInfoScreen: React.FC = () => {
     .reduce((sum, txn) => sum + Number(txn.worth), 0);
 
   const handleCopyId = async () => {
-    await Clipboard.setStringAsync(curEvent.id);
+    await Clipboard.setStringAsync(curEvent.eventDetails.id);
     Alert.alert("Copied", "Event ID copied to clipboard");
   };
 
@@ -63,7 +63,7 @@ const EventInfoScreen: React.FC = () => {
       onConfirm: async () => {
         try {
           showLoader("Deleting event...");
-          await removeEventById(curEvent.id);
+          await removeEventById(curEvent.eventDetails.id);
           dispatch(clearCurEvent());
           hideLoader();
           showToast("Event deleted successfully!", "success");
@@ -82,7 +82,7 @@ const EventInfoScreen: React.FC = () => {
       pathname: "/CreateEvent",
       params: {
         isEditMode: "true",
-        eventId: curEvent.id,
+        eventId: curEvent.eventDetails.id,
       },
     });
   };
@@ -98,14 +98,14 @@ const EventInfoScreen: React.FC = () => {
           >
             <Icon name="arrow-left" size={28} color={theme.text} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>{curEvent.title}</Text>
+          <Text style={styles.headerTitle}>{curEvent.eventDetails.title}</Text>
           <View style={styles.placeholder} />
         </View>
 
         {/* Event ID */}
         <TouchableOpacity onPress={handleCopyId} style={styles.idCard}>
           <Text style={styles.idLabel}>Event ID</Text>
-          <Text style={styles.idValue}>{curEvent.id}</Text>
+          <Text style={styles.idValue}>{curEvent.eventDetails.id}</Text>
           <Text style={styles.copyHint}>(Tap to copy)</Text>
         </TouchableOpacity>
 
@@ -114,12 +114,14 @@ const EventInfoScreen: React.FC = () => {
           <Icon name="calendar" size={20} color={theme.info} />
           <View style={{ marginLeft: 8 }}>
             <Text style={styles.dateText}>
-              {formatDateLong(curEvent.startDate)}
+              {formatDateLong(curEvent.eventDetails.startDate)}
             </Text>
-            {curEvent.isMultiDay && (
+            {curEvent.eventDetails.isMultiDay && (
               <Text style={styles.dateText}>
                 →{" "}
-                {curEvent.endDate ? `${formatDateLong(curEvent.endDate)}` : ""}
+                {curEvent.eventDetails.endDate
+                  ? `${formatDateLong(curEvent.eventDetails.endDate)}`
+                  : ""}
               </Text>
             )}
           </View>
@@ -129,19 +131,19 @@ const EventInfoScreen: React.FC = () => {
         <View style={styles.balanceCard}>
           <Text style={styles.amountsLabel}>Balance</Text>
           <Text style={styles.balanceValue}>
-            {formatAmount(curEvent.balanceAmount)}
+            {formatAmount(curEvent.eventDetails.balanceAmount)}
           </Text>
           <View style={styles.amountRow}>
             <View>
               <Text style={styles.amountsLabel}>Income</Text>
               <Text style={[styles.amountIn, { color: theme.success }]}>
-                +{formatAmount(curEvent.incomingAmount)}
+                +{formatAmount(curEvent.eventDetails.incomingAmount)}
               </Text>
             </View>
             <View>
               <Text style={styles.amountsLabel}>Expense</Text>
               <Text style={[styles.amountOut, { color: theme.error }]}>
-                -{formatAmount(curEvent.outgoingAmount)}
+                -{formatAmount(curEvent.eventDetails.outgoingAmount)}
               </Text>
             </View>
           </View>

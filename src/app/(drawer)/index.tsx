@@ -6,6 +6,9 @@ import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import {
+  createTransactionsTable
+} from "@/be/database/sqlite/database";
 import { testDB } from "@/be/database/supabase/transaction";
 import useEventsHandler from "@/hooks/useEvents.hook";
 import Icon from "@expo/vector-icons/Ionicons";
@@ -68,7 +71,7 @@ const DevScreen: React.FC = (): React.JSX.Element => {
   const devPress = async () => {
     console.log("clicked devPress");
     try {
-      const res = await getAllEvents();
+      const res = await createTransactionsTable();
       // const res = await getDb();
       // const res = await getAllExpenseEvents();
       console.log("res");

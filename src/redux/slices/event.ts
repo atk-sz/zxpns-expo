@@ -1,23 +1,30 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IEventTransaction, IExpenseEvent } from "../../utils/interfaces";
 
-const initialState: IExpenseEvent = {
-  id: "",
-  title: "",
-  startDate: "",
-  isMultiDay: false,
-  isGroupEvent: false,
-  balanceAmount: "0",
-  incomingAmount: "0",
-  outgoingAmount: "0",
-  endDate: "",
+type ICurEvent = {
+  eventDetails: IExpenseEvent;
+  transactions: IEventTransaction[];
+};
+
+const initialState: ICurEvent = {
+  eventDetails: {
+    id: "",
+    title: "",
+    startDate: "",
+    isMultiDay: false,
+    isGroupEvent: false,
+    balanceAmount: "0",
+    incomingAmount: "0",
+    outgoingAmount: "0",
+    endDate: "",
+    open: true,
+    synced: false,
+  },
   transactions: [],
-  open: true,
-  synced: false,
 };
 
 // 🔹 Utility: Recalculate overall totals
-const recalcTotals = (state: IExpenseEvent) => {
+const recalcTotals = (state: ICurEvent) => {
   const incoming = state.transactions
     .filter((t) => t.type === "incoming")
     .reduce((sum, t) => sum + parseFloat(t.amount.toString()), 0);
@@ -26,13 +33,13 @@ const recalcTotals = (state: IExpenseEvent) => {
     .filter((t) => t.type === "outgoing")
     .reduce((sum, t) => sum + parseFloat(t.amount.toString()), 0);
 
-  state.incomingAmount = incoming.toString();
-  state.outgoingAmount = outgoing.toString();
-  state.balanceAmount = (incoming - outgoing).toString();
+  state.eventDetails.incomingAmount = incoming.toString();
+  state.eventDetails.outgoingAmount = outgoing.toString();
+  state.eventDetails.balanceAmount = (incoming - outgoing).toString();
 };
 
 // 🔹 Utility: Recalculate balanceAmountNow for all transactions
-const recalcRunningBalances = (state: IExpenseEvent) => {
+const recalcRunningBalances = (state: ICurEvent) => {
   let runningBalance = 0;
 
   state.transactions.forEach((t) => {
@@ -68,7 +75,7 @@ const curEventSlice = createSlice({
   name: "curEvent",
   initialState,
   reducers: {
-    saveCurEvent: (_, action: PayloadAction<IExpenseEvent>) => action.payload,
+    saveCurEvent: (_, action: PayloadAction<ICurEvent>) => action.payload,
     clearCurEvent: () => initialState,
     addTransactionToCurEvent: (
       state,

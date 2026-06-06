@@ -45,3 +45,4 @@ example
 // for dev purposes only, not to be committed
 /delete.ts 
 .env
+dev.txt

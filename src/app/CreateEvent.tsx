@@ -44,7 +44,6 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
     incomingAmount: "0",
     outgoingAmount: "0",
     endDate: "",
-    transactions: [],
     open: true,
     synced: false,
   });
@@ -73,7 +72,12 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
   const onSubmitCreate = async (newEvent: IExpenseEvent) => {
     try {
       await createEvent(newEvent);
-      dispatch(saveCurEvent(newEvent));
+      dispatch(
+        saveCurEvent({
+          eventDetails: newEvent,
+          transactions: [],
+        }),
+      );
       router.replace({
         pathname: "/EventDetails",
         params: { id: newEvent.id },
@@ -91,7 +95,12 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
         ...updates,
       };
       await updateEventById(eventToEdit?.id || "", updatedEvent);
-      dispatch(saveCurEvent(updatedEvent));
+      dispatch(
+        saveCurEvent({
+          eventDetails: updatedEvent,
+          transactions: [],
+        }),
+      );
       showToast("Event updated successfully", "success");
       router.back();
     } catch (error) {

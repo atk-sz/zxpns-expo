@@ -6,11 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  IEventTransaction,
-  IExpenseEvent,
-  ITransactionsCount,
-} from "../utils/interfaces";
+import { IEventTransaction, ITransactionsCount } from "../utils/interfaces";
 
 import EventTransactionForm from "@/components/forms/event-transaction-form.component";
 import ScreenView from "@/components/generic/ScreenView";
@@ -24,7 +20,7 @@ import { useToast } from "../contexts/toast.context";
 import { addTransactionToCurEvent } from "../redux/slices/event";
 import { updateEvent } from "../redux/slices/events";
 import { saveCurTransaction } from "../redux/slices/transaction";
-import store from "../redux/store";
+import store, { RootState } from "../redux/store";
 import {
   formatAmount,
   getCountOfTransactions,
@@ -35,7 +31,7 @@ const EventDetailsScreen: React.FC = () => {
   const { id } = useLocalSearchParams();
   const { showToast } = useToast();
   const insets = useSafeAreaInsets();
-  const curEvent = useSelector((state: any) => state.curEvent) as IExpenseEvent;
+  const curEvent = useSelector((state: RootState) => state.curEvent);
   const [showForm, setShowForm] = useState(false);
   const [transactionsCount, setTransactionsCount] =
     useState<ITransactionsCount>({
@@ -52,12 +48,11 @@ const EventDetailsScreen: React.FC = () => {
     const updatedCurEvent = store.getState().curEvent;
     dispatch(
       updateEvent({
-        id: curEvent.id,
+        id: curEvent.eventDetails.id,
         updates: {
-          transactions: updatedCurEvent.transactions,
-          balanceAmount: updatedCurEvent.balanceAmount,
-          incomingAmount: updatedCurEvent.incomingAmount,
-          outgoingAmount: updatedCurEvent.outgoingAmount,
+          balanceAmount: updatedCurEvent.eventDetails.balanceAmount,
+          incomingAmount: updatedCurEvent.eventDetails.incomingAmount,
+          outgoingAmount: updatedCurEvent.eventDetails.outgoingAmount,
         },
       }),
     );
@@ -97,19 +92,21 @@ const EventDetailsScreen: React.FC = () => {
   return (
     <ScreenView>
       <View style={styles.container}>
-        <Text style={styles.title}>{curEvent?.title || "Event Details"}</Text>
+        <Text style={styles.title}>
+          {curEvent?.eventDetails?.title || "Event Details"}
+        </Text>
 
         <View style={styles.row}>
           <View style={styles.card}>
             <Text style={styles.cardLabel}>Income</Text>
             <Text style={[styles.cardValue, styles.incomeText]}>
-              {formatAmount(curEvent.incomingAmount)}
+              {formatAmount(curEvent.eventDetails.incomingAmount)}
             </Text>
           </View>
           <View style={styles.card}>
             <Text style={styles.cardLabel}>Expense</Text>
             <Text style={[styles.cardValue, styles.expenseText]}>
-              {formatAmount(curEvent.outgoingAmount)}
+              {formatAmount(curEvent.eventDetails.outgoingAmount)}
             </Text>
           </View>
         </View>
@@ -118,7 +115,7 @@ const EventDetailsScreen: React.FC = () => {
           <View style={[styles.card, styles.balanceCard]}>
             <Text style={styles.cardLabel}>Balance</Text>
             <Text style={[styles.cardValue, styles.balanceText]}>
-              {formatAmount(curEvent.balanceAmount)}
+              {formatAmount(curEvent.eventDetails.balanceAmount)}
             </Text>
           </View>
         </View>

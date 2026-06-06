@@ -86,10 +86,9 @@ const TransactionDetailsScreen: React.FC = () => {
           updateEvent({
             id: eventId as string,
             updates: {
-              transactions: updatedCurEvent.transactions,
-              balanceAmount: updatedCurEvent.balanceAmount,
-              incomingAmount: updatedCurEvent.incomingAmount,
-              outgoingAmount: updatedCurEvent.outgoingAmount,
+              balanceAmount: updatedCurEvent.eventDetails.balanceAmount,
+              incomingAmount: updatedCurEvent.eventDetails.incomingAmount,
+              outgoingAmount: updatedCurEvent.eventDetails.outgoingAmount,
             },
           }),
         );

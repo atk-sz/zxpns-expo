@@ -195,12 +195,12 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
         errors.amount = "Amount must be less than 9999999999";
       }
       if (formValues.type === "incoming") {
-        const newBal = Number(curEvent.balanceAmount) + amountNum;
+        const newBal = Number(curEvent.eventDetails.balanceAmount) + amountNum;
         if (newBal > 99999999999)
           errors.amount =
             "Balance after this transaction exceeds limit of 99999999999";
       } else if (formValues.type === "outgoing") {
-        const newBal = Number(curEvent.balanceAmount) - amountNum;
+        const newBal = Number(curEvent.eventDetails.balanceAmount) - amountNum;
         if (newBal < -99999999999)
           errors.amount =
             "Balance after this transaction is less than -99999999999";
