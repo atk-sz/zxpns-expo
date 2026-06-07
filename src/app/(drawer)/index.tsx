@@ -1,12 +1,12 @@
 import ScreenView from "@/components/generic/ScreenView";
 import { theme } from "@/constants/theme";
 import { useLoader } from "@/contexts/loader.context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // import { testDB } from "@/be/database/supabase/transaction";
+import { deleteAllTables } from "@/be/database/sqlite/database";
 import { transactionRepo } from "@/be/database/sqlite/transactionRepo";
 import useEventsHandler from "@/hooks/useEvents.hook";
 import Icon from "@expo/vector-icons/Ionicons";
@@ -18,25 +18,6 @@ const DevScreen: React.FC = (): React.JSX.Element => {
   const navigation = useNavigation();
   const { getAllEvents } = useEventsHandler();
 
-  // to acces data from async storage
-  // const loadUser = async () => {
-  //   try {
-  //     const persistedState = await AsyncStorage.getItem('persist:root');
-  //     console.log('persistedState', persistedState);
-  //     if (persistedState) {
-  //       const parsedState = JSON.parse(persistedState);
-  //       console.log('parsedState', parsedState);
-
-  //       // user slice is stringified JSON, so parse it again
-  //       const userState = JSON.parse(parsedState.user);
-  //       console.log('userState', userState);
-  //       // setUser(userState)
-  //     }
-  //   } catch (err) {
-  //     console.error('Error loading user:', err);
-  //   }
-  // };
-
   const showLoaderFn = (): void => {
     showLoader("Brrr...");
     setTimeout(() => {
@@ -46,8 +27,8 @@ const DevScreen: React.FC = (): React.JSX.Element => {
 
   const removeData = async () => {
     try {
-      await AsyncStorage.clear();
-      // router.replace("/PreScreen");
+      await deleteAllTables();
+      console.log("removed all tables");
     } catch (e) {
       console.error("Failed to clear storage:", e);
     }
@@ -70,7 +51,6 @@ const DevScreen: React.FC = (): React.JSX.Element => {
     console.log("clicked devPress");
     try {
       let res = "ntg";
-      // await deleteAllTables();
       // await createEventsTable();
       // await createTransactionsTable();
       // res = (await getAllTables()) as any;
