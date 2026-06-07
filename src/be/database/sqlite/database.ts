@@ -38,6 +38,7 @@ export const createEventsTable = async () => {
 
 export const createTransactionsTable = async () => {
   const SQBD = await getOrOpenDBConnection();
+
   await SQBD.execAsync(`
   CREATE TABLE IF NOT EXISTS event_transactions (
     id TEXT PRIMARY KEY,
@@ -51,10 +52,24 @@ export const createTransactionsTable = async () => {
     item_name TEXT,
 
     synced INTEGER NOT NULL DEFAULT 0,
-    FOREIGN KEY (event_id) REFERENCES expense_events(id) ON DELETE CASCADE
+
+    FOREIGN KEY (event_id)
+      REFERENCES expense_events(id)
+      ON DELETE CASCADE
   );
+
+  CREATE INDEX IF NOT EXISTS idx_transactions_event_date
+  ON event_transactions(event_id, date);
 `);
 };
+
+// above i have added indexing on event_id and date for transactions table
+// this helps in getting transactions by event_id and date as SQLite(or anyothe DB) supports indexing
+// whats indexing? indexing is a way to speed up queries on a database by creating a secondary index for foreign keys
+// example here is: if there are 4 events E1 E2 E3 E4 & each have 100 transactions
+// and if we dont do indexing then sqlite will have to search for each transaction for each event
+// but with indexing SQLite will create a secondary index for event_id behind the event_transactions table where each event index has 100 transactions
+// therefor there are only 4 indexes & it will only have to search for each event once(thats only 4 times) & then return 100 transactions for that event
 
 export const getAllTables = async () => {
   const SQBD = await getOrOpenDBConnection();

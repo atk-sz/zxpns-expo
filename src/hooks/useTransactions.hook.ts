@@ -1,3 +1,4 @@
+import { createTransactionsTable } from "@/be/database/sqlite/database";
 import { transactionRepo } from "@/be/database/sqlite/transactionRepo";
 import { saveCurEvent } from "@/redux/slices/event";
 import { RootState } from "@/redux/store";
@@ -52,6 +53,10 @@ const recalcTotals = (
 const useTransactionsHandler = () => {
   const dispatch = useDispatch();
   const curEvent = useSelector((state: RootState) => state.curEvent);
+
+  const createTable = async () => {
+    await createTransactionsTable();
+  };
 
   const addTransaction = async (newTransaction: IEventTransaction) => {
     // re-initialise a copy of current event
@@ -157,7 +162,12 @@ const useTransactionsHandler = () => {
     dispatch(saveCurEvent(tempCurEvent));
   };
 
-  return { addTransaction, getEventTransactions, deleteTransaction };
+  return {
+    createTable,
+    addTransaction,
+    getEventTransactions,
+    deleteTransaction,
+  };
 };
 
 export default useTransactionsHandler;

@@ -1,3 +1,4 @@
+import { createEventsTable } from "@/be/database/sqlite/database";
 import { eventRepo } from "@/be/database/sqlite/eventRepo";
 import {
   addEvent,
@@ -10,6 +11,10 @@ import { useDispatch } from "react-redux";
 
 const useEventsHandler = () => {
   const dispatch = useDispatch();
+
+  const createTable = async () => {
+    await createEventsTable();
+  };
 
   const createEvent = async (newEvent: IExpenseEvent) => {
     await eventRepo.create(newEvent);
@@ -32,7 +37,13 @@ const useEventsHandler = () => {
     dispatch(removeEvent(id));
   };
 
-  return { createEvent, getAllEvents, removeEventById, updateEventById };
+  return {
+    createTable,
+    createEvent,
+    getAllEvents,
+    removeEventById,
+    updateEventById,
+  };
 };
 
 export default useEventsHandler;

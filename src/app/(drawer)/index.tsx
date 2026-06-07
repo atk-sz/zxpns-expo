@@ -6,8 +6,7 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // import { testDB } from "@/be/database/supabase/transaction";
-import { deleteAllTables } from "@/be/database/sqlite/database";
-import { transactionRepo } from "@/be/database/sqlite/transactionRepo";
+import { deleteAllTables, getAllTables } from "@/be/database/sqlite/database";
 import useEventsHandler from "@/hooks/useEvents.hook";
 import Icon from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "expo-router";
@@ -53,8 +52,8 @@ const DevScreen: React.FC = (): React.JSX.Element => {
       let res = "ntg";
       // await createEventsTable();
       // await createTransactionsTable();
-      // res = (await getAllTables()) as any;
-      res = (await transactionRepo.getAllTransactions()) as any;
+      res = (await getAllTables()) as any;
+      // res = (await transactionRepo.getAllTransactions()) as any;
       // res = (await eventRepo.getAll()) as any;
       // res = (await transactionRepo.getTransactionsByEventId(
       //   "4e15a577-ccc7-428b-976d-3592e396d4c1",

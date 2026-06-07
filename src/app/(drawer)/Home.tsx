@@ -1,7 +1,9 @@
 import ScreenView from "@/components/generic/ScreenView";
 import ExpenseEventsList from "@/components/lists/expense-events-list.component";
 import { theme } from "@/constants/theme";
+import { useToast } from "@/contexts/toast.context";
 import useEventsHandler from "@/hooks/useEvents.hook";
+import useTransactionsHandler from "@/hooks/useTransactions.hook";
 import { RootState } from "@/redux/store";
 import Icon from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "expo-router";
@@ -13,10 +15,26 @@ import { useSelector } from "react-redux";
 const HomeScreen: React.FC = (): React.JSX.Element => {
   const navigation = useNavigation();
   const events = useSelector((state: RootState) => state.events);
-  const { getAllEvents } = useEventsHandler();
+  const { showToast } = useToast();
+  const { createTable: createEventsTable, getAllEvents } = useEventsHandler();
+  const { createTable: createTransactionsTable } = useTransactionsHandler();
 
   useEffect(() => {
-    getAllEvents();
+    const init = async () => {
+      try {
+        await Promise.all([createEventsTable(), createTransactionsTable()]);
+
+        await getAllEvents();
+      } catch (error) {
+        console.error("Initialization failed:", error);
+        showToast(
+          "Unable to fetch your events \n Please try again later",
+          "error",
+        );
+      }
+    };
+
+    init();
   }, []);
 
   const { firstName, lastName } = useSelector((state: RootState) => state.user);
