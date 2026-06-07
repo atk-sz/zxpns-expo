@@ -2,6 +2,7 @@ import { theme } from "@/constants/theme";
 import { RootState } from "@/redux/store";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import * as Crypto from "expo-crypto";
 import React, { useEffect, useState } from "react";
 import {
   Keyboard,
@@ -20,9 +21,8 @@ import {
   formatDateLong,
   formatDateTimeISO,
   formatTime12hrs,
-  generateId,
   getTypeColor,
-  getTypeIcon,
+  getTypeIcon
 } from "../../utils/common.util";
 import { IEventTransaction } from "../../utils/interfaces";
 import ToastComponent from "../toast/toast.component";
@@ -55,7 +55,6 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
     id: "",
     amount: "",
     type: "incoming",
-    balanceAmountNow: "",
     description: "",
     date: formatDateTimeISO(new Date()),
     eventId: eventId,
@@ -145,7 +144,6 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
       type: "incoming",
       description: "",
       date: formatDateTimeISO(newDate),
-      balanceAmountNow: "",
       eventId: eventId,
       worth: "",
       itemName: "",
@@ -229,7 +227,7 @@ const EventTransactionForm: React.FC<IEventTransactionFormProps> = ({
     }
 
     // Generate new ID and submit
-    const newId = generateId();
+    const newId = Crypto.randomUUID();
     const transactionToSubmit = {
       ...formValues,
       description: formValues.description.trim(),

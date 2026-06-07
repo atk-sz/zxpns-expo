@@ -1,5 +1,6 @@
 import ScreenView from "@/components/generic/ScreenView";
 import { theme } from "@/constants/theme";
+import useTransactionsHandler from "@/hooks/useTransactions.hook";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -15,10 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ConfirmationModal from "../components/model/confirmationModel.component";
 import { useToast } from "../contexts/toast.context";
 import useConfirmationModal from "../hooks/useConfirmationModel";
-import { deleteTransactionFromCurEvent } from "../redux/slices/event";
-import { updateEvent } from "../redux/slices/events";
 import { clearCurTransaction } from "../redux/slices/transaction";
-import store from "../redux/store";
 import {
   formatAmount,
   formatDateLong,
@@ -37,6 +35,7 @@ const TransactionDetailsScreen: React.FC = () => {
     (state: any) => state.curTransaction,
   ) as IEventTransaction;
   const dispatch = useDispatch();
+  const { deleteTransaction } = useTransactionsHandler();
 
   const {
     isVisible,
@@ -74,27 +73,17 @@ const TransactionDetailsScreen: React.FC = () => {
       iconName: "alert-circle",
       iconColor: theme.error,
       confirmButtonColor: theme.error,
-      onConfirm: () => {
-        // Remove transaction from current event
-        dispatch(deleteTransactionFromCurEvent(transactionId));
-        // reset curTransaction state
-        dispatch(clearCurTransaction());
-
-        // update the list of events with newly updated event with new transactions & balances
-        const updatedCurEvent = store.getState().curEvent;
-        dispatch(
-          updateEvent({
-            id: eventId as string,
-            updates: {
-              balanceAmount: updatedCurEvent.eventDetails.balanceAmount,
-              incomingAmount: updatedCurEvent.eventDetails.incomingAmount,
-              outgoingAmount: updatedCurEvent.eventDetails.outgoingAmount,
-            },
-          }),
-        );
-
-        showToast("Transaction deleted successfully!", "success");
-        router.back();
+      onConfirm: async () => {
+        try {
+          await deleteTransaction(transactionId);
+          // reset curTransaction state
+          dispatch(clearCurTransaction());
+          showToast("Transaction deleted successfully!", "success");
+          router.back();
+        } catch (error) {
+          console.log(error);
+          showToast("Failed to delete transaction", "error");
+        }
       },
     });
   };
@@ -174,7 +163,7 @@ const TransactionDetailsScreen: React.FC = () => {
               <Text style={styles.cardTitle}>Balance After</Text>
             </View>
             <Text style={[styles.cardValue, { color: theme.info }]}>
-              {formatAmount(curTransaction.balanceAmountNow)}
+              {/* {formatAmount(curTransaction.balanceAmountNow)} */}0
             </Text>
           </View>
 

@@ -1,9 +1,9 @@
 import { eventRepo } from "@/be/database/sqlite/eventRepo";
 import {
-    addEvent,
-    removeEvent,
-    setEvents,
-    updateEvent,
+  addEvent,
+  removeEvent,
+  setEvents,
+  updateEvent,
 } from "@/redux/slices/events";
 import { IExpenseEvent } from "@/utils/interfaces";
 import { useDispatch } from "react-redux";

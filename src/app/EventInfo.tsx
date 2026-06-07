@@ -46,7 +46,7 @@ const EventInfoScreen: React.FC = () => {
     .reduce((sum, txn) => sum + Number(txn.worth), 0);
 
   const handleCopyId = async () => {
-    await Clipboard.setStringAsync(curEvent.eventDetails.id);
+    await Clipboard.setStringAsync(curEvent.eventDetails.eventId);
     Alert.alert("Copied", "Event ID copied to clipboard");
   };
 
@@ -105,7 +105,7 @@ const EventInfoScreen: React.FC = () => {
         {/* Event ID */}
         <TouchableOpacity onPress={handleCopyId} style={styles.idCard}>
           <Text style={styles.idLabel}>Event ID</Text>
-          <Text style={styles.idValue}>{curEvent.eventDetails.id}</Text>
+          <Text style={styles.idValue}>{curEvent.eventDetails.eventId}</Text>
           <Text style={styles.copyHint}>(Tap to copy)</Text>
         </TouchableOpacity>
 
@@ -137,13 +137,13 @@ const EventInfoScreen: React.FC = () => {
             <View>
               <Text style={styles.amountsLabel}>Income</Text>
               <Text style={[styles.amountIn, { color: theme.success }]}>
-                +{formatAmount(curEvent.eventDetails.incomingAmount)}
+                +{formatAmount(curEvent.eventDetails.totalIncome)}
               </Text>
             </View>
             <View>
               <Text style={styles.amountsLabel}>Expense</Text>
               <Text style={[styles.amountOut, { color: theme.error }]}>
-                -{formatAmount(curEvent.eventDetails.outgoingAmount)}
+                -{formatAmount(curEvent.eventDetails.totalExpense)}
               </Text>
             </View>
           </View>

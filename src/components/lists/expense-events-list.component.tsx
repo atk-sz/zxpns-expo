@@ -1,6 +1,7 @@
 import { Spacing, theme } from "@/constants/theme";
 import useConfirmationModal from "@/hooks/useConfirmationModel";
 import useEventsHandler from "@/hooks/useEvents.hook";
+import useTransactionsHandler from "@/hooks/useTransactions.hook";
 import Icon from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -12,10 +13,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useDispatch } from "react-redux";
 import { useLoader } from "../../contexts/loader.context";
 import { useToast } from "../../contexts/toast.context";
-import { saveCurEvent } from "../../redux/slices/event";
 import { IExpenseEvent } from "../../utils/interfaces";
 import ExpenseItemComponent from "../list-items/ExpenseItem.component";
 import ConfirmationModal from "../model/confirmationModel.component";
@@ -25,10 +24,10 @@ type IExpenseEventsListProps = {
 };
 
 const ExpenseEventsList: React.FC<IExpenseEventsListProps> = ({ expenses }) => {
-  const dispatch = useDispatch();
   const { showToast } = useToast();
   const { showLoader, hideLoader } = useLoader();
   const { removeEventById } = useEventsHandler();
+  const { getEventTransactions } = useTransactionsHandler();
 
   const {
     isVisible,
@@ -70,19 +69,19 @@ const ExpenseEventsList: React.FC<IExpenseEventsListProps> = ({ expenses }) => {
     });
   };
 
-  const onEventPress = (item: IExpenseEvent) => {
+  const onEventPress = async (item: IExpenseEvent) => {
     const foundEvent = expenses.find((e) => e.id === item.id);
     if (!foundEvent) return;
-    dispatch(
-      saveCurEvent({
-        eventDetails: foundEvent,
-        transactions: [],
-      }),
-    );
-    router.push({
-      pathname: "/EventDetails",
-      params: { id: item.id },
-    });
+    try {
+      await getEventTransactions(foundEvent);
+      router.push({
+        pathname: "/EventDetails",
+        params: { id: item.id },
+      });
+    } catch (error) {
+      console.log(error);
+      showToast("Unable to load the event", "error");
+    }
   };
 
   const renderExpenseItem = ({ item }: { item: IExpenseEvent }) => (

@@ -16,22 +16,21 @@ export const getOrOpenDBConnection = async () => {
 
 export const createEventsTable = async () => {
   const SQBD = await getOrOpenDBConnection();
-  // eventId TEXT NOT NULL UNIQUE,  -- 6 digit readable ID add later
   await SQBD.execAsync(`
     CREATE TABLE IF NOT EXISTS expense_events (
       id TEXT PRIMARY KEY,           -- UUID
 
+      event_id TEXT NOT NULL UNIQUE,
       title TEXT NOT NULL,
-      startDate TEXT NOT NULL,
-      endDate TEXT,
-      isMultiDay INTEGER NOT NULL,
-      isGroupEvent INTEGER NOT NULL,
+      start_date TEXT NOT NULL,
+      end_date TEXT,
+      is_multi_day INTEGER NOT NULL,
+      is_group_event INTEGER NOT NULL,
 
-      balanceAmount TEXT NOT NULL,
-      incomingAmount TEXT NOT NULL,
-      outgoingAmount TEXT NOT NULL,
+      balance_amount TEXT NOT NULL,
+      total_income TEXT NOT NULL,
+      total_expense TEXT NOT NULL,
 
-      open INTEGER NOT NULL,
       synced INTEGER NOT NULL
     );
   `);
@@ -42,16 +41,17 @@ export const createTransactionsTable = async () => {
   await SQBD.execAsync(`
   CREATE TABLE IF NOT EXISTS event_transactions (
     id TEXT PRIMARY KEY,
+
     amount TEXT NOT NULL,
-    balanceAmountNow TEXT NOT NULL,
     type TEXT NOT NULL,
     description TEXT,
     date TEXT NOT NULL,
-    eventId TEXT NOT NULL,
+    event_id TEXT NOT NULL,
     worth TEXT,
-    itemName TEXT,
+    item_name TEXT,
+
     synced INTEGER NOT NULL DEFAULT 0,
-    FOREIGN KEY (eventId) REFERENCES expense_events(id) ON DELETE CASCADE
+    FOREIGN KEY (event_id) REFERENCES expense_events(id) ON DELETE CASCADE
   );
 `);
 };

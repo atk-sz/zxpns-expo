@@ -12,15 +12,14 @@ import EventTransactionForm from "@/components/forms/event-transaction-form.comp
 import ScreenView from "@/components/generic/ScreenView";
 import TransactionItemComponent from "@/components/list-items/TransactionItem.component";
 import { theme } from "@/constants/theme";
+import useTransactionsHandler from "@/hooks/useTransactions.hook";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "../contexts/toast.context";
-import { addTransactionToCurEvent } from "../redux/slices/event";
-import { updateEvent } from "../redux/slices/events";
 import { saveCurTransaction } from "../redux/slices/transaction";
-import store, { RootState } from "../redux/store";
+import { RootState } from "../redux/store";
 import {
   formatAmount,
   getCountOfTransactions,
@@ -30,6 +29,7 @@ import {
 const EventDetailsScreen: React.FC = () => {
   const { id } = useLocalSearchParams();
   const { showToast } = useToast();
+  const { addTransaction } = useTransactionsHandler();
   const insets = useSafeAreaInsets();
   const curEvent = useSelector((state: RootState) => state.curEvent);
   const [showForm, setShowForm] = useState(false);
@@ -42,22 +42,17 @@ const EventDetailsScreen: React.FC = () => {
     });
   const dispatch = useDispatch();
 
-  const handleTransactionSubmit = async (newTransaction: IEventTransaction) => {
-    dispatch(addTransactionToCurEvent(newTransaction));
-    // update the list of events with newly updated event with new transactions & balances
-    const updatedCurEvent = store.getState().curEvent;
-    dispatch(
-      updateEvent({
-        id: curEvent.eventDetails.id,
-        updates: {
-          balanceAmount: updatedCurEvent.eventDetails.balanceAmount,
-          incomingAmount: updatedCurEvent.eventDetails.incomingAmount,
-          outgoingAmount: updatedCurEvent.eventDetails.outgoingAmount,
-        },
-      }),
-    );
-    setShowForm(false);
-    showToast("Transaction added successfully!", "success");
+  const handleNewTransactionSubmit = async (
+    newTransaction: IEventTransaction,
+  ) => {
+    try {
+      await addTransaction(newTransaction);
+      setShowForm(false);
+      showToast("Transaction added successfully!", "success");
+    } catch (error) {
+      console.log("failed to add transaction", error);
+      showToast("Failed to add transaction", "error");
+    }
   };
 
   const handleTransactionPress = (transaction: IEventTransaction) => {
@@ -100,13 +95,13 @@ const EventDetailsScreen: React.FC = () => {
           <View style={styles.card}>
             <Text style={styles.cardLabel}>Income</Text>
             <Text style={[styles.cardValue, styles.incomeText]}>
-              {formatAmount(curEvent.eventDetails.incomingAmount)}
+              {formatAmount(curEvent.eventDetails.totalIncome)}
             </Text>
           </View>
           <View style={styles.card}>
             <Text style={styles.cardLabel}>Expense</Text>
             <Text style={[styles.cardValue, styles.expenseText]}>
-              {formatAmount(curEvent.eventDetails.outgoingAmount)}
+              {formatAmount(curEvent.eventDetails.totalExpense)}
             </Text>
           </View>
         </View>
@@ -205,7 +200,7 @@ const EventDetailsScreen: React.FC = () => {
         visible={showForm}
         eventId={id as string}
         onClose={() => setShowForm(false)}
-        onSubmit={handleTransactionSubmit}
+        onSubmit={handleNewTransactionSubmit}
       />
     </ScreenView>
   );

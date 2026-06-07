@@ -13,11 +13,11 @@ import { useSelector } from "react-redux";
 const HomeScreen: React.FC = (): React.JSX.Element => {
   const navigation = useNavigation();
   const events = useSelector((state: RootState) => state.events);
+  const { getAllEvents } = useEventsHandler();
 
   useEffect(() => {
     getAllEvents();
   }, []);
-  const { getAllEvents } = useEventsHandler();
 
   const { firstName, lastName } = useSelector((state: RootState) => state.user);
 

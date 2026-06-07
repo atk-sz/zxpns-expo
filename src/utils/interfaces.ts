@@ -5,6 +5,11 @@ export type IUserState = {
   password: string;
 };
 
+export type ICurEvent = {
+  eventDetails: IExpenseEvent;
+  transactions: IEventTransaction[];
+};
+
 export type IToastType = "success" | "error" | "info";
 
 export interface IToastContextType {
@@ -13,16 +18,15 @@ export interface IToastContextType {
 
 export interface IExpenseEvent {
   id: string;
-  // eventid: string;
+  eventId: string;
   title: string;
   startDate: string;
   isMultiDay: boolean;
+  endDate?: string;
   isGroupEvent: boolean;
   balanceAmount: string;
-  incomingAmount: string;
-  outgoingAmount: string;
-  endDate?: string;
-  open: boolean;
+  totalIncome: string;
+  totalExpense: string;
   synced: boolean;
 }
 
@@ -31,7 +35,6 @@ export type ITransactionType = "incoming" | "outgoing" | "item";
 export interface IEventTransaction {
   id: string;
   amount: string;
-  balanceAmountNow: string;
   type: ITransactionType;
   description: string;
   date: string;

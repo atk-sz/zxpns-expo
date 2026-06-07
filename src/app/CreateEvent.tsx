@@ -6,6 +6,7 @@ import useConfirmationModal from "@/hooks/useConfirmationModel";
 import useEventsHandler from "@/hooks/useEvents.hook";
 import { RootState } from "@/redux/store";
 import Icon from "@expo/vector-icons/Feather";
+import * as Crypto from "expo-crypto";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -36,15 +37,15 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
   >({});
   const [formValues, setFormValues] = useState<IExpenseEvent>({
     id: "",
+    eventId: "",
     title: "",
     startDate: "",
     isMultiDay: false,
     isGroupEvent: false,
-    balanceAmount: "0",
-    incomingAmount: "0",
-    outgoingAmount: "0",
     endDate: "",
-    open: true,
+    balanceAmount: "0",
+    totalIncome: "0",
+    totalExpense: "0",
     synced: false,
   });
   const [eventToEdit, setEventToEdit] = useState<IExpenseEvent | null>(null);
@@ -171,7 +172,8 @@ const CreateEventScreen: React.FC = (): React.JSX.Element => {
       onSubmitUpdate(updatedFormValues);
     } else {
       const newId = generateId(updatedFormValues.title, 8);
-      const newEvent = { ...updatedFormValues, id: newId };
+      const id = Crypto.randomUUID();
+      const newEvent = { ...updatedFormValues, eventId: newId, id };
       onSubmitCreate(newEvent);
     }
   };

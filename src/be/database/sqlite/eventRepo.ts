@@ -9,30 +9,30 @@ export const eventRepo = {
       `
       INSERT INTO expense_events (
         id,
+        event_id,
         title,
-        startDate,
-        endDate,
-        isMultiDay,
-        isGroupEvent,
-        balanceAmount,
-        incomingAmount,
-        outgoingAmount,
-        open,
+        start_date,
+        end_date,
+        is_multi_day,
+        is_group_event,
+        balance_amount,
+        total_income,
+        total_expense,
         synced
       )
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       [
         event.id,
+        event.eventId,
         event.title,
         event.startDate,
         event.endDate ?? null,
         event.isMultiDay ? 1 : 0,
         event.isGroupEvent ? 1 : 0,
         event.balanceAmount,
-        event.incomingAmount,
-        event.outgoingAmount,
-        event.open ? 1 : 0,
+        event.totalIncome,
+        event.totalExpense,
         event.synced ? 1 : 0,
       ],
     );
@@ -44,16 +44,20 @@ export const eventRepo = {
     const rows = await SQBD.getAllAsync<any>(`
       SELECT *
       FROM expense_events
-      ORDER BY startDate DESC
+      ORDER BY start_date DESC
     `);
 
     return rows.map((row) => ({
       ...row,
-      isMultiDay: Boolean(row.isMultiDay),
-      isGroupEvent: Boolean(row.isGroupEvent),
-      open: Boolean(row.open),
+      eventId: row.event_id,
+      startDate: row.start_date,
+      endDate: row.end_date ? row.end_date : null,
+      isMultiDay: Boolean(row.is_multi_day),
+      isGroupEvent: Boolean(row.is_group_event),
+      balanceAmount: row.balance_amount,
+      totalIncome: row.total_income,
+      totalExpense: row.total_expense,
       synced: Boolean(row.synced),
-      transactions: [],
     }));
   },
 
@@ -74,15 +78,9 @@ export const eventRepo = {
     UPDATE expense_events
     SET
       title = ?,
-      startDate = ?,
-      endDate = ?,
-      isMultiDay = ?,
-      isGroupEvent = ?,
-      balanceAmount = ?,
-      incomingAmount = ?,
-      outgoingAmount = ?,
-      open = ?,
-      synced = ?
+      start_date = ?,
+      end_date = ?,
+      is_multi_day = ?
     WHERE id = ?
     `,
       [
@@ -90,12 +88,6 @@ export const eventRepo = {
         event.startDate,
         event.endDate ?? null,
         event.isMultiDay ? 1 : 0,
-        event.isGroupEvent ? 1 : 0,
-        event.balanceAmount,
-        event.incomingAmount,
-        event.outgoingAmount,
-        event.open ? 1 : 0,
-        event.synced ? 1 : 0,
         id,
       ],
     );
