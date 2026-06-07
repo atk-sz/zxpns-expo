@@ -7,7 +7,7 @@ export type IUserState = {
 
 export type ICurEvent = {
   eventDetails: IExpenseEvent;
-  transactions: IEventTransaction[];
+  transactions: IEventTransactionWithBalance[];
 };
 
 export type IToastType = "success" | "error" | "info";
@@ -42,6 +42,10 @@ export interface IEventTransaction {
   worth?: string;
   itemName?: string;
   synced: boolean;
+}
+
+export interface IEventTransactionWithBalance extends IEventTransaction {
+  balanceAmountNow: number;
 }
 
 export interface ITransactionsCount {

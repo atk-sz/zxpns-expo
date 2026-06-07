@@ -6,6 +6,10 @@ import {
   IEventTransaction,
   IExpenseEvent,
 } from "@/utils/interfaces";
+import {
+  computeRunningBalances,
+  recomputeFromIndex,
+} from "@/utils/transactions";
 import { useDispatch, useSelector } from "react-redux";
 
 const findInsertIndex = (
@@ -50,26 +54,35 @@ const useTransactionsHandler = () => {
   const curEvent = useSelector((state: RootState) => state.curEvent);
 
   const addTransaction = async (newTransaction: IEventTransaction) => {
+    // re-initialise a copy of current event
     const tempCurEvent: ICurEvent = {
       ...curEvent,
       eventDetails: { ...curEvent.eventDetails },
       transactions: [...curEvent.transactions],
     };
 
+    // find insert index based on date
     const newTransactionDate = new Date(newTransaction.date);
     const insertIndex = findInsertIndex(
       curEvent.transactions,
       newTransactionDate,
     );
 
+    // create a temp copy of transactions to calculate balances for event(balanceAmountNow is only for curEvent)
     const tempTransactions = [
       ...curEvent.transactions.slice(0, insertIndex),
-      newTransaction,
+      { ...newTransaction, balanceAmountNow: 0 },
       ...curEvent.transactions.slice(insertIndex),
     ];
 
-    tempCurEvent.transactions = tempTransactions;
+    // update transactions with new balances for current event to diplay
+    const tempTransactionsWithBalance = recomputeFromIndex(
+      tempTransactions,
+      insertIndex,
+    );
+    tempCurEvent.transactions = tempTransactionsWithBalance;
 
+    // recompute totals for current event & DB
     const { newIncomingAmount, newOutgoingAmount, newBalanceAmount } =
       recalcTotals(tempCurEvent);
     // DB action
@@ -82,6 +95,7 @@ const useTransactionsHandler = () => {
       },
       tempCurEvent.eventDetails.id,
     );
+    // since DB action is completed without error, update current event with new totals
     tempCurEvent.eventDetails.balanceAmount = newBalanceAmount;
     tempCurEvent.eventDetails.totalExpense = newOutgoingAmount;
     tempCurEvent.eventDetails.totalIncome = newIncomingAmount;
@@ -89,29 +103,44 @@ const useTransactionsHandler = () => {
   };
 
   const getEventTransactions = async (foundEvent: IExpenseEvent) => {
+    // get transactions for current event from DB
     const transactions = await transactionRepo.getTransactionsByEventId(
       foundEvent.id,
     );
+    // updated transactions with running balances
+    const transactionsWithBalance = computeRunningBalances(transactions);
     dispatch(
       saveCurEvent({
         eventDetails: foundEvent,
-        transactions: transactions,
+        transactions: transactionsWithBalance,
       }),
     );
   };
 
   const deleteTransaction = async (id: string) => {
+    // initialise a copy of current event
     const tempCurEvent: ICurEvent = {
       ...curEvent,
       eventDetails: { ...curEvent.eventDetails },
       transactions: [...curEvent.transactions],
     };
+    // find index of transaction to delete
     const idx = tempCurEvent.transactions.findIndex((t) => t.id === id);
     if (idx === -1) return;
+
+    // delete transaction from copy of current event & recompute balances & again update the copy of current event
     tempCurEvent.transactions.splice(idx, 1);
+    const tempTransactionsWithBalance = recomputeFromIndex(
+      tempCurEvent.transactions,
+      idx,
+    );
+    tempCurEvent.transactions = tempTransactionsWithBalance;
+
+    // recompute totals from copy of current event to update both DB & current event
     const { newIncomingAmount, newOutgoingAmount, newBalanceAmount } =
       recalcTotals(tempCurEvent);
 
+    // DB action
     await transactionRepo.removeTransaction(
       id,
       {
@@ -121,6 +150,7 @@ const useTransactionsHandler = () => {
       },
       tempCurEvent.eventDetails.id,
     );
+    // since DB action is completed without error, update current event with latest totals
     tempCurEvent.eventDetails.balanceAmount = newBalanceAmount;
     tempCurEvent.eventDetails.totalExpense = newOutgoingAmount;
     tempCurEvent.eventDetails.totalIncome = newIncomingAmount;

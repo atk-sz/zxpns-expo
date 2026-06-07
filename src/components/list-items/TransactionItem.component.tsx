@@ -9,10 +9,13 @@ import {
   getTypeColor,
   getTypeIcon,
 } from "../../utils/common.util";
-import { IEventTransaction } from "../../utils/interfaces";
+import {
+  IEventTransaction,
+  IEventTransactionWithBalance,
+} from "../../utils/interfaces";
 
 interface ITransactionItemProps {
-  item: IEventTransaction;
+  item: IEventTransactionWithBalance;
   onPress: (transaction: IEventTransaction) => void;
 }
 
@@ -118,9 +121,7 @@ const TransactionItemComponent: React.FC<ITransactionItemProps> = ({
           <Text style={styles.dateTime}>
             {formatDateLong(item.date)} | {formatTime12hrs(item.date)}
           </Text>
-          <Text style={styles.dateTime}>
-            Bal: {formatAmount(item.balanceAmountNow)}
-          </Text>
+          <Text style={styles.dateTime}>Bal: {item.balanceAmountNow}</Text>
         </View>
       </Animated.View>
     </Pressable>

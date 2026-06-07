@@ -6,7 +6,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { IEventTransaction, ITransactionsCount } from "../utils/interfaces";
+import {
+  IEventTransaction,
+  IEventTransactionWithBalance,
+  ITransactionsCount,
+} from "../utils/interfaces";
 
 import EventTransactionForm from "@/components/forms/event-transaction-form.component";
 import ScreenView from "@/components/generic/ScreenView";
@@ -73,7 +77,11 @@ const EventDetailsScreen: React.FC = () => {
     });
   };
 
-  const renderTransactionItem = ({ item }: { item: IEventTransaction }) => (
+  const renderTransactionItem = ({
+    item,
+  }: {
+    item: IEventTransactionWithBalance;
+  }) => (
     <TransactionItemComponent item={item} onPress={handleTransactionPress} />
   );
 

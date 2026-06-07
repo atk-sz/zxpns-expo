@@ -59,7 +59,7 @@ export const transactionRepo = {
       `
     SELECT *
     FROM event_transactions
-    ORDER BY date DESC
+    ORDER BY date ASC
     `,
     );
   },
@@ -72,7 +72,7 @@ export const transactionRepo = {
     SELECT *
     FROM event_transactions
     WHERE event_id = ?
-    ORDER BY date DESC
+    ORDER BY date ASC
     `,
       [eventId],
     );
