@@ -59,7 +59,9 @@ const EventDetailsScreen: React.FC = () => {
     }
   };
 
-  const handleTransactionPress = (transaction: IEventTransaction) => {
+  const handleTransactionPress = (
+    transaction: IEventTransactionWithBalance,
+  ) => {
     dispatch(saveCurTransaction(transaction));
     router.push({
       pathname: "/TransactionDetails",

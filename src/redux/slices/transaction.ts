@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IEventTransaction } from "../../utils/interfaces";
+import { IEventTransactionWithBalance } from "../../utils/interfaces";
 
-const initialState: IEventTransaction = {
+const initialState: IEventTransactionWithBalance = {
   id: "",
   amount: "",
-  balanceAmountNow: "",
+  balanceAmountNow: 0,
   type: "incoming",
   description: "",
   date: "",
@@ -16,8 +16,10 @@ const curTransactionSlice = createSlice({
   name: "curTransaction",
   initialState,
   reducers: {
-    saveCurTransaction: (state, action: PayloadAction<IEventTransaction>) =>
-      action.payload,
+    saveCurTransaction: (
+      _,
+      action: PayloadAction<IEventTransactionWithBalance>,
+    ) => action.payload,
     clearCurTransaction: () => initialState,
   },
 });

@@ -10,13 +10,12 @@ import {
   getTypeIcon,
 } from "../../utils/common.util";
 import {
-  IEventTransaction,
-  IEventTransactionWithBalance,
+  IEventTransactionWithBalance
 } from "../../utils/interfaces";
 
 interface ITransactionItemProps {
   item: IEventTransactionWithBalance;
-  onPress: (transaction: IEventTransaction) => void;
+  onPress: (transaction: IEventTransactionWithBalance) => void;
 }
 
 const TransactionItemComponent: React.FC<ITransactionItemProps> = ({

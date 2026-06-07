@@ -1,6 +1,7 @@
 import ScreenView from "@/components/generic/ScreenView";
 import { theme } from "@/constants/theme";
 import useTransactionsHandler from "@/hooks/useTransactions.hook";
+import { RootState } from "@/redux/store";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -25,15 +26,14 @@ import {
   getTypeIcon,
   getTypeLabel,
 } from "../utils/common.util";
-import { IEventTransaction } from "../utils/interfaces";
 
 const TransactionDetailsScreen: React.FC = () => {
   const { transactionId, eventId } = useLocalSearchParams();
   const { showToast } = useToast();
   const insets = useSafeAreaInsets();
   const curTransaction = useSelector(
-    (state: any) => state.curTransaction,
-  ) as IEventTransaction;
+    (state: RootState) => state.curTransaction,
+  );
   const dispatch = useDispatch();
   const { deleteTransaction } = useTransactionsHandler();
 
@@ -163,7 +163,7 @@ const TransactionDetailsScreen: React.FC = () => {
               <Text style={styles.cardTitle}>Balance After</Text>
             </View>
             <Text style={[styles.cardValue, { color: theme.info }]}>
-              {/* {formatAmount(curTransaction.balanceAmountNow)} */}0
+              {curTransaction.balanceAmountNow}
             </Text>
           </View>
 
