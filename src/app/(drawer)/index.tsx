@@ -6,7 +6,10 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // import { testDB } from "@/be/database/supabase/transaction";
-import { deleteAllTables, getAllTables } from "@/be/database/sqlite/database";
+import {
+  clearAllData,
+  getAllTables
+} from "@/be/database/sqlite/database";
 import { supabase } from "@/configs/supabase.config";
 import { useToast } from "@/contexts/toast.context";
 import useEventsHandler from "@/hooks/useEvents.hook";
@@ -14,12 +17,14 @@ import { signOut } from "@/services/auth.service";
 import Icon from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "expo-router/build/react-navigation";
+import { useSQLiteContext } from "expo-sqlite";
 
 const DevScreen: React.FC = (): React.JSX.Element => {
   const { showLoader, hideLoader } = useLoader();
   const navigation = useNavigation();
   const { getAllEvents } = useEventsHandler();
   const { showToast } = useToast();
+  const db = useSQLiteContext();
 
   const showLoaderFn = (): void => {
     showLoader("Brrr...");
@@ -30,7 +35,7 @@ const DevScreen: React.FC = (): React.JSX.Element => {
 
   const removeData = async () => {
     try {
-      await deleteAllTables();
+      await clearAllData(db);
       console.log("removed all tables");
     } catch (e) {
       console.error("Failed to clear storage:", e);
@@ -56,7 +61,7 @@ const DevScreen: React.FC = (): React.JSX.Element => {
       let res = "ntg";
       // await createEventsTable();
       // await createTransactionsTable();
-      res = (await getAllTables()) as any;
+      res = (await getAllTables(db)) as any;
       // res = (await transactionRepo.getAllTransactions()) as any;
       // res = (await eventRepo.getAll()) as any;
       // res = (await transactionRepo.getTransactionsByEventId(

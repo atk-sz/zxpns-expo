@@ -1,4 +1,3 @@
-import { createTransactionsTable } from "@/be/database/sqlite/database";
 import { transactionRepo } from "@/be/database/sqlite/transactionRepo";
 import { saveCurEvent } from "@/redux/slices/event";
 import { RootState } from "@/redux/store";
@@ -11,6 +10,7 @@ import {
   computeRunningBalances,
   recomputeFromIndex,
 } from "@/utils/transactions";
+import { useSQLiteContext } from "expo-sqlite";
 import { useDispatch, useSelector } from "react-redux";
 
 const findInsertIndex = (
@@ -51,12 +51,9 @@ const recalcTotals = (
 };
 
 const useTransactionsHandler = () => {
+  const db = useSQLiteContext();
   const dispatch = useDispatch();
   const curEvent = useSelector((state: RootState) => state.curEvent);
-
-  const createTable = async () => {
-    await createTransactionsTable();
-  };
 
   const addTransaction = async (newTransaction: IEventTransaction) => {
     // re-initialise a copy of current event
@@ -99,6 +96,7 @@ const useTransactionsHandler = () => {
         income: newIncomingAmount,
       },
       tempCurEvent.eventDetails.id,
+      db,
     );
     // since DB action is completed without error, update current event with new totals
     tempCurEvent.eventDetails.balanceAmount = newBalanceAmount;
@@ -111,6 +109,7 @@ const useTransactionsHandler = () => {
     // get transactions for current event from DB
     const transactions = await transactionRepo.getTransactionsByEventId(
       foundEvent.id,
+      db,
     );
     // updated transactions with running balances
     const transactionsWithBalance = computeRunningBalances(transactions);
@@ -154,6 +153,7 @@ const useTransactionsHandler = () => {
         income: newIncomingAmount,
       },
       tempCurEvent.eventDetails.id,
+      db,
     );
     // since DB action is completed without error, update current event with latest totals
     tempCurEvent.eventDetails.balanceAmount = newBalanceAmount;
@@ -163,7 +163,6 @@ const useTransactionsHandler = () => {
   };
 
   return {
-    createTable,
     addTransaction,
     getEventTransactions,
     deleteTransaction,

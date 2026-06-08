@@ -1,22 +1,13 @@
 import * as SQLite from "expo-sqlite";
 
-let db: SQLite.SQLiteDatabase | null = null;
-
-export const getOrOpenDBConnection = async () => {
-  if (db) return db;
-
-  db = await SQLite.openDatabaseAsync("zxpense.db");
-
-  await db.execAsync(`
-    PRAGMA foreign_keys = ON;
-  `);
-
-  return db;
+export const initializeDB = async (db: SQLite.SQLiteDatabase) => {
+  await db.execAsync(`PRAGMA foreign_keys = ON;`);
+  await createEventsTable(db);
+  await createTransactionsTable(db);
 };
 
-export const createEventsTable = async () => {
-  const SQBD = await getOrOpenDBConnection();
-  await SQBD.execAsync(`
+export const createEventsTable = async (DB: SQLite.SQLiteDatabase) => {
+  await DB.execAsync(`
     CREATE TABLE IF NOT EXISTS expense_events (
       id TEXT PRIMARY KEY,           -- UUID
 
@@ -36,10 +27,8 @@ export const createEventsTable = async () => {
   `);
 };
 
-export const createTransactionsTable = async () => {
-  const SQBD = await getOrOpenDBConnection();
-
-  await SQBD.execAsync(`
+export const createTransactionsTable = async (DB: SQLite.SQLiteDatabase) => {
+  await DB.execAsync(`
   CREATE TABLE IF NOT EXISTS event_transactions (
     id TEXT PRIMARY KEY,
 
@@ -71,9 +60,8 @@ export const createTransactionsTable = async () => {
 // but with indexing SQLite will create a secondary index for event_id behind the event_transactions table where each event index has 100 transactions
 // therefor there are only 4 indexes & it will only have to search for each event once(thats only 4 times) & then return 100 transactions for that event
 
-export const getAllTables = async () => {
-  const SQBD = await getOrOpenDBConnection();
-  const tables = await SQBD.getAllAsync(`
+export const getAllTables = async (DB: SQLite.SQLiteDatabase) => {
+  const tables = await DB.getAllAsync(`
     SELECT name
     FROM sqlite_master
     WHERE type='table'
@@ -82,48 +70,33 @@ export const getAllTables = async () => {
   return tables;
 };
 
-export const deleteEventsTable = async () => {
-  const SQBD = await getOrOpenDBConnection();
-  await SQBD.execAsync(`
+export const deleteEventsTable = async (DB: SQLite.SQLiteDatabase) => {
+  await DB.execAsync(`
     DROP TABLE IF EXISTS expense_events;
   `);
 };
 
-export const deleteTransactionsTable = async () => {
-  const SQBD = await getOrOpenDBConnection();
-  await SQBD.execAsync(`
+export const deleteTransactionsTable = async (DB: SQLite.SQLiteDatabase) => {
+  await DB.execAsync(`
     DROP TABLE IF EXISTS event_transactions;
   `);
 };
 
-export const deleteAllTables = async () => {
-  const SQBD = await getOrOpenDBConnection();
+export const clearAllData = async (db: SQLite.SQLiteDatabase) => {
+  await db.execAsync(`DELETE FROM event_transactions;`);
+  await db.execAsync(`DELETE FROM expense_events;`);
+  // await db.execAsync(`
+  //   DELETE FROM event_transactions;
+  //   DELETE FROM expense_events;
+  // `);
+};
 
-  const tables = await SQBD.getAllAsync<{
-    name: string;
-  }>(`
-    SELECT name
-    FROM sqlite_master
-    WHERE type='table'
-      AND name NOT LIKE 'sqlite_%';
+export const deleteAllTables = async (db: SQLite.SQLiteDatabase) => {
+  const tables = await db.getAllAsync<{ name: string }>(`
+    SELECT name FROM sqlite_master
+    WHERE type='table' AND name NOT LIKE 'sqlite_%';
   `);
-
   for (const table of tables) {
-    await SQBD.execAsync(`DROP TABLE IF EXISTS ${table.name};`);
+    await db.execAsync(`DROP TABLE IF EXISTS ${table.name};`);
   }
-};
-
-export const clearAllData = async () => {
-  const SQBD = await getOrOpenDBConnection();
-
-  await SQBD.execAsync(`
-    DELETE FROM event_transactions;
-    DELETE FROM expense_events;
-  `);
-};
-
-export const deleteDB = async () => {
-  const SQBD = await getOrOpenDBConnection();
-  await SQBD.closeAsync();
-  await SQLite.deleteDatabaseAsync("zxpense.db");
 };

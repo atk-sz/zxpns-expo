@@ -1,17 +1,17 @@
 import { IEventTransaction } from "@/utils/interfaces";
-import { getOrOpenDBConnection } from "./database";
+import * as SQLite from "expo-sqlite";
 
 export const transactionRepo = {
   async create(
     transaction: IEventTransaction,
     newTotals: { income: string; expense: string; balance: string },
     eventId: string,
+    DB: SQLite.SQLiteDatabase,
   ) {
     const { income, expense, balance } = newTotals;
-    const SQBD = await getOrOpenDBConnection();
 
-    await SQBD.withTransactionAsync(async () => {
-      await SQBD.runAsync(
+    await DB.withTransactionAsync(async () => {
+      await DB.runAsync(
         `
     INSERT INTO event_transactions (
       id,
@@ -39,7 +39,7 @@ export const transactionRepo = {
         ],
       );
 
-      await SQBD.runAsync(
+      await DB.runAsync(
         `
     UPDATE expense_events
     SET
@@ -53,9 +53,8 @@ export const transactionRepo = {
     });
   },
 
-  async getAllTransactions() {
-    const SQBD = await getOrOpenDBConnection();
-    return await SQBD.getAllAsync<IEventTransaction>(
+  async getAllTransactions(DB: SQLite.SQLiteDatabase) {
+    return await DB.getAllAsync<IEventTransaction>(
       `
     SELECT *
     FROM event_transactions
@@ -64,10 +63,8 @@ export const transactionRepo = {
     );
   },
 
-  async getTransactionsByEventId(eventId: string) {
-    const SQBD = await getOrOpenDBConnection();
-
-    return await SQBD.getAllAsync<IEventTransaction>(
+  async getTransactionsByEventId(eventId: string, DB: SQLite.SQLiteDatabase) {
+    return await DB.getAllAsync<IEventTransaction>(
       `
     SELECT *
     FROM event_transactions
@@ -82,12 +79,12 @@ export const transactionRepo = {
     transactionId: string,
     newTotals: { income: string; expense: string; balance: string },
     eventId: string,
+    DB: SQLite.SQLiteDatabase,
   ) {
     const { income, expense, balance } = newTotals;
-    const SQBD = await getOrOpenDBConnection();
 
-    await SQBD.withTransactionAsync(async () => {
-      await SQBD.runAsync(
+    await DB.withTransactionAsync(async () => {
+      await DB.runAsync(
         `
         DELETE FROM event_transactions
         WHERE id = ?
@@ -95,7 +92,7 @@ export const transactionRepo = {
         [transactionId],
       );
 
-      await SQBD.runAsync(
+      await DB.runAsync(
         `
         UPDATE expense_events
         SET

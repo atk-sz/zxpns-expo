@@ -1,11 +1,9 @@
 import { IExpenseEvent } from "@/utils/interfaces";
-import { getOrOpenDBConnection } from "./database";
+import * as SQLite from "expo-sqlite";
 
 export const eventRepo = {
-  async create(event: IExpenseEvent) {
-    const SQBD = await getOrOpenDBConnection();
-
-    await SQBD.runAsync(
+  async create(event: IExpenseEvent, DB: SQLite.SQLiteDatabase): Promise<void> {
+    await DB.runAsync(
       `
       INSERT INTO expense_events (
         id,
@@ -38,10 +36,8 @@ export const eventRepo = {
     );
   },
 
-  async getAll(): Promise<IExpenseEvent[]> {
-    const SQBD = await getOrOpenDBConnection();
-
-    const rows = await SQBD.getAllAsync<any>(`
+  async getAll(DB: SQLite.SQLiteDatabase): Promise<IExpenseEvent[]> {
+    const rows = await DB.getAllAsync<any>(`
       SELECT *
       FROM expense_events
       ORDER BY start_date DESC
@@ -65,15 +61,12 @@ export const eventRepo = {
     // ...
   },
 
-  async remove(id: string) {
-    const SQBD = await getOrOpenDBConnection();
-    await SQBD.runAsync(`DELETE FROM expense_events WHERE id = ?`, [id]);
+  async remove(id: string, DB: SQLite.SQLiteDatabase) {
+    await DB.runAsync(`DELETE FROM expense_events WHERE id = ?`, [id]);
   },
 
-  async update(id: string, event: IExpenseEvent) {
-    const SQBD = await getOrOpenDBConnection();
-
-    await SQBD.runAsync(
+  async update(id: string, event: IExpenseEvent, DB: SQLite.SQLiteDatabase) {
+    await DB.runAsync(
       `
     UPDATE expense_events
     SET
