@@ -1,10 +1,12 @@
 import ScreenView from "@/components/generic/ScreenView";
+import { supabase } from "@/configs/supabase.config";
 import { Spacing, theme } from "@/constants/theme";
 import { useToast } from "@/contexts/toast.context";
+import { signUpWithEmail } from "@/services/auth.service";
 import Icon from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -120,11 +122,18 @@ const Signup: React.FC = (): React.JSX.Element => {
 
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
+      const res = await signUpWithEmail(
+        formValues.email,
+        formValues.password,
+        formValues.firstName,
+        formValues.lastName,
+      );
+      if (res.error) throw res.error;
       showToast("Account created successfully!", "success");
-      // router.replace("/Home");
+      router.replace("/Home");
     } catch (error) {
+      console.log("signup error:");
+      console.log(error);
       const errorMessage =
         error instanceof Error ? error.message : "Signup failed";
       showToast(errorMessage, "error");
@@ -136,6 +145,18 @@ const Signup: React.FC = (): React.JSX.Element => {
   const handleLoginPress = () => {
     router.push("/Login");
   };
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+
+      if (data.session) {
+        router.replace("/Home");
+      }
+    };
+
+    checkSession();
+  }, []);
 
   return (
     <ScreenView>

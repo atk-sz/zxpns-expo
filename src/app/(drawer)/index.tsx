@@ -7,7 +7,10 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // import { testDB } from "@/be/database/supabase/transaction";
 import { deleteAllTables, getAllTables } from "@/be/database/sqlite/database";
+import { supabase } from "@/configs/supabase.config";
+import { useToast } from "@/contexts/toast.context";
 import useEventsHandler from "@/hooks/useEvents.hook";
+import { signOut } from "@/services/auth.service";
 import Icon from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "expo-router/build/react-navigation";
@@ -16,6 +19,7 @@ const DevScreen: React.FC = (): React.JSX.Element => {
   const { showLoader, hideLoader } = useLoader();
   const navigation = useNavigation();
   const { getAllEvents } = useEventsHandler();
+  const { showToast } = useToast();
 
   const showLoaderFn = (): void => {
     showLoader("Brrr...");
@@ -67,6 +71,36 @@ const DevScreen: React.FC = (): React.JSX.Element => {
     }
   };
 
+  const checkLogin = async () => {
+    console.log("clicked checkLogin");
+    try {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+      if (error) throw error;
+      if (!session) throw "no session";
+      showToast("You are logged in", "success");
+      console.log("session");
+      console.log("session");
+      console.log("session");
+      console.log(session);
+    } catch (e) {
+      console.log(e);
+      showToast("You are not logged in", "error");
+    }
+  };
+
+  const onLogoutPress = async () => {
+    console.log("clicked logout");
+    try {
+      await signOut();
+      showToast("Logout successful!", "success");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <ScreenView>
       <Text style={styles.text}>Dev Screen</Text>
@@ -94,6 +128,18 @@ const DevScreen: React.FC = (): React.JSX.Element => {
       </TouchableOpacity>
       <TouchableOpacity style={styles.btn} onPress={devPress}>
         <Text>Create DB/Table</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.btn} onPress={checkLogin}>
+        <Text>Login check</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.btn} onPress={onLogoutPress}>
+        <Text>Logout</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.btn}
+        onPress={() => router.push("/UpdatePassword")}
+      >
+        <Text>Update password</Text>
       </TouchableOpacity>
     </ScreenView>
   );

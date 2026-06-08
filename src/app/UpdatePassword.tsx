@@ -2,47 +2,51 @@ import ScreenView from "@/components/generic/ScreenView";
 import { supabase } from "@/configs/supabase.config";
 import { Spacing, theme } from "@/constants/theme";
 import { useToast } from "@/contexts/toast.context";
-import { signInWithEmail } from "@/services/auth.service";
 import Icon from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
-interface ILoginFormValues {
-  email: string;
+interface IUpdatePasswordFormValues {
   password: string;
+  confirmPassword: string;
 }
 
-interface ILoginFormErrors {
-  email?: string;
+const DUMMY_EMAIL = "user@example.com";
+
+interface IUpdatePasswordFormErrors {
   password?: string;
+  confirmPassword?: string;
 }
 
-const Login: React.FC = (): React.JSX.Element => {
+const UpdatePassword: React.FC = (): React.JSX.Element => {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [formErrors, setFormErrors] = useState<ILoginFormErrors>({});
-  const [formValues, setFormValues] = useState<ILoginFormValues>({
-    email: "",
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formValues, setFormValues] = useState<IUpdatePasswordFormValues>({
     password: "",
+    confirmPassword: "",
   });
+  const [formErrors, setFormErrors] = useState<IUpdatePasswordFormErrors>({});
 
-  const handleChange = (key: keyof ILoginFormValues, value: string) => {
+  const handleChange = (
+    key: keyof IUpdatePasswordFormValues,
+    value: string,
+  ): void => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
 
-    // Clear error for this field when user starts typing
     if (formErrors[key]) {
       setFormErrors((prev) => {
         const newErrors = { ...prev };
@@ -52,22 +56,26 @@ const Login: React.FC = (): React.JSX.Element => {
     }
   };
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
   const validateForm = (): boolean => {
-    const errors: ILoginFormErrors = {};
-
-    if (!formValues.email.trim()) {
-      errors.email = "Email is required";
-    } else if (!validateEmail(formValues.email)) {
-      errors.email = "Please enter a valid email";
-    }
+    const errors: IUpdatePasswordFormErrors = {};
 
     if (!formValues.password.trim()) {
-      errors.password = "Password is required";
+      errors.password = "New password is required";
+    } else if (formValues.password.length < 6) {
+      errors.password = "Password must be at least 6 characters";
+    } else if (formValues.password.length > 25) {
+      errors.password = "Password can be at most 25 characters long";
+    } else if (
+      !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).+$/.test(formValues.password)
+    ) {
+      errors.password =
+        "Password must contain letters, a number, and a special character";
+    }
+
+    if (!formValues.confirmPassword.trim()) {
+      errors.confirmPassword = "Please confirm your new password";
+    } else if (formValues.confirmPassword !== formValues.password) {
+      errors.confirmPassword = "Passwords do not match";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -86,27 +94,23 @@ const Login: React.FC = (): React.JSX.Element => {
 
     try {
       setLoading(true);
-      const res = await signInWithEmail(formValues.email, formValues.password);
-      if (res.error) throw res.error;
-      showToast("Login successful!", "success");
+      const { error } = await supabase.auth.updateUser({
+        password: formValues.password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      showToast("Password updated successfully!", "success");
       router.replace("/Home");
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "Login failed";
-      console.log("error");
-      console.log(error);
+        error instanceof Error ? error.message : "Unable to update password";
       showToast(errorMessage, "error");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSignUpPress = () => {
-    router.push("/Signup");
-  };
-
-  const handleForgotPasswordPress = () => {
-    router.push("/ForgotPassword");
   };
 
   useEffect(() => {
@@ -131,51 +135,23 @@ const Login: React.FC = (): React.JSX.Element => {
           contentContainerStyle={styles.screenContainer}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Logo and Title */}
           <View style={styles.titleContainer}>
             <Image
               source={require("../../assets/images/logo.png")}
-              style={{
-                width: 40,
-                height: 40,
-              }}
+              style={styles.logo}
             />
-            <Text style={styles.titleText}>Zxpense</Text>
+            <Text style={styles.titleText}>Update Password</Text>
           </View>
 
-          {/* Subtitle */}
-          <Text style={styles.subtitleText}>Welcome Back</Text>
+          <Text style={styles.emailText}>Updating password for</Text>
+          <Text style={styles.emailHighlight}>{DUMMY_EMAIL}</Text>
+
           <Text style={styles.descriptionText}>
-            Sign in to manage your expenses
+            Choose a new password for your account and confirm it below.
           </Text>
 
-          {/* Email Input */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Email</Text>
-            <View style={styles.inputWrapper}>
-              <Icon
-                name="email"
-                size={20}
-                color={theme.grey}
-                style={styles.inputIcon}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your email"
-                placeholderTextColor={theme.grey}
-                value={formValues.email}
-                onChangeText={(value) => handleChange("email", value)}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                editable={!loading}
-              />
-            </View>
-            <Text style={styles.errorText}>{formErrors.email ?? " "}</Text>
-          </View>
-
-          {/* Password Input */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Password</Text>
+            <Text style={styles.inputLabel}>New Password</Text>
             <View style={styles.inputWrapper}>
               <Icon
                 name="lock"
@@ -185,7 +161,7 @@ const Login: React.FC = (): React.JSX.Element => {
               />
               <TextInput
                 style={[styles.input, { flex: 1 }]}
-                placeholder="Enter your password"
+                placeholder="Enter your new password"
                 placeholderTextColor={theme.grey}
                 value={formValues.password}
                 onChangeText={(value) => handleChange("password", value)}
@@ -207,35 +183,60 @@ const Login: React.FC = (): React.JSX.Element => {
             <Text style={styles.errorText}>{formErrors.password ?? " "}</Text>
           </View>
 
-          {/* Login Button */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Confirm Password</Text>
+            <View style={styles.inputWrapper}>
+              <Icon
+                name="lock"
+                size={20}
+                color={theme.grey}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                placeholder="Confirm your new password"
+                placeholderTextColor={theme.grey}
+                value={formValues.confirmPassword}
+                onChangeText={(value) => handleChange("confirmPassword", value)}
+                secureTextEntry={!showConfirmPassword}
+                editable={!loading}
+              />
+              <TouchableOpacity
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                disabled={loading}
+              >
+                <Icon
+                  name={showConfirmPassword ? "visibility" : "visibility-off"}
+                  size={20}
+                  color={theme.grey}
+                  style={styles.inputIcon}
+                />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.errorText}>
+              {formErrors.confirmPassword ?? " "}
+            </Text>
+          </View>
+
           <TouchableOpacity
-            style={[styles.loginBtn, loading && styles.loginBtnDisabled]}
+            style={[styles.actionBtn, loading && styles.btnDisabled]}
             onPress={onSubmit}
             disabled={loading}
           >
             {loading ? (
               <ActivityIndicator color={theme.text} size="small" />
             ) : (
-              <Text style={styles.loginBtnText}>Sign In</Text>
+              <Text style={styles.actionBtnText}>Update Password</Text>
             )}
           </TouchableOpacity>
 
-          {/* Forgot Password */}
           <TouchableOpacity
-            onPress={handleForgotPasswordPress}
+            style={styles.backToLogin}
+            onPress={() => router.replace("/Home")}
             disabled={loading}
-            style={styles.forgotPasswordButton}
           >
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            <Text style={styles.signUpLinkText}>Back to Home</Text>
           </TouchableOpacity>
-
-          {/* Sign Up Link */}
-          <View style={styles.signUpContainer}>
-            <Text style={styles.signUpText}>Don't have an account? </Text>
-            <TouchableOpacity onPress={handleSignUpPress} disabled={loading}>
-              <Text style={styles.signUpLinkText}>Sign Up</Text>
-            </TouchableOpacity>
-          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </ScreenView>
@@ -256,23 +257,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  logo: {
+    width: 40,
+    height: 40,
+  },
   titleText: {
     color: theme.text,
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "600",
     marginLeft: Spacing.three,
     letterSpacing: 0.5,
-  },
-  subtitleText: {
-    color: theme.text,
-    fontSize: 24,
-    fontWeight: "600",
-    marginBottom: Spacing.one,
   },
   descriptionText: {
     color: theme.lightGrey,
     fontSize: 14,
     marginBottom: Spacing.five,
+    textAlign: "center",
+    maxWidth: 320,
   },
   inputContainer: {
     width: "100%",
@@ -308,7 +309,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.one,
     minHeight: 16,
   },
-  loginBtn: {
+  actionBtn: {
     width: "100%",
     backgroundColor: theme.secondary,
     paddingVertical: Spacing.two,
@@ -318,33 +319,29 @@ const styles = StyleSheet.create({
     marginTop: Spacing.three,
     marginBottom: Spacing.two,
   },
-  loginBtnDisabled: {
+  btnDisabled: {
     opacity: 0.6,
   },
-  loginBtnText: {
+  actionBtnText: {
     color: theme.text,
     fontSize: 16,
     fontWeight: "600",
   },
-  forgotPasswordButton: {
-    width: "100%",
-    alignItems: "flex-end",
-    marginBottom: Spacing.four,
+  backToLogin: {
+    marginTop: Spacing.two,
   },
-  forgotPasswordText: {
-    color: theme.secondary,
-    fontSize: 14,
-    fontWeight: "500",
-    textDecorationLine: "underline",
-  },
-  signUpContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: Spacing.four,
-  },
-  signUpText: {
+  emailText: {
     color: theme.lightGrey,
     fontSize: 14,
+    marginBottom: Spacing.one,
+    textAlign: "center",
+  },
+  emailHighlight: {
+    color: theme.text,
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: Spacing.three,
+    textAlign: "center",
   },
   signUpLinkText: {
     color: theme.secondary,
@@ -354,4 +351,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default UpdatePassword;

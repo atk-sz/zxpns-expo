@@ -1,4 +1,5 @@
 import ScreenView from "@/components/generic/ScreenView";
+import { supabase } from "@/configs/supabase.config";
 import { Spacing, theme } from "@/constants/theme";
 import { useToast } from "@/contexts/toast.context";
 import Icon from "@expo/vector-icons/MaterialIcons";
@@ -43,11 +44,16 @@ const ForgotPassword: React.FC = (): React.JSX.Element => {
 
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-      setError(undefined);
-      showToast("Password reset link sent to your email.", "success");
-      await new Promise((resolve) => setTimeout(resolve, 500));
 
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: "zxpns://UpdatePassword",
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      showToast("Password reset link sent successfully!", "success");
       router.replace("/Login");
     } catch (error) {
       const errorMessage =
